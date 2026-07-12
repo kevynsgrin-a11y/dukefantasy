@@ -1,0 +1,39 @@
+# Cloudflare Pages configuration for DukeFantasy.
+#
+# Deploy (after `npm run build`):
+#   npx wrangler pages deploy public --project-name dukefantasy
+# Local dev with Functions + KV emulation:
+#   npx wrangler pages dev public
+#
+# The site is static; Pages Functions under /functions provide two edge
+# capabilities only:
+#   - /api/feed/*     edge-cached proxy for upstream open-data feeds
+#                     (Sleeper / FFC / nflverse / Open-Meteo) so the browser
+#                     never hits third-party APIs directly and their politeness
+#                     rules are honored server-side.
+#   - /api/subscribe  KV-backed email capture (double opt-in ready).
+
+name = "dukefantasy"
+pages_build_output_dir = "public"
+compatibility_date = "2026-07-01"
+
+# --- KV namespaces -----------------------------------------------------------
+# Create with:
+#   npx wrangler kv namespace create DUKE_CACHE
+#   npx wrangler kv namespace create DUKE_SUBSCRIBERS
+# then paste the returned ids below (and *_preview_id for `pages dev`).
+[[kv_namespaces]]
+binding = "DUKE_CACHE"
+id = "REPLACE_WITH_KV_ID"          # edge feed cache + daily Sleeper player-DB snapshot
+preview_id = "REPLACE_WITH_KV_ID"
+
+[[kv_namespaces]]
+binding = "DUKE_SUBSCRIBERS"
+id = "REPLACE_WITH_KV_ID"          # email capture list
+preview_id = "REPLACE_WITH_KV_ID"
+
+[vars]
+SITE_NAME = "DukeFantasy"
+SITE_ORIGIN = "https://dukefantasy.com"
+# Descriptive User-Agent sent on every upstream fetch (politeness requirement).
+FEED_USER_AGENT = "DukeFantasy/0.1 (+https://dukefantasy.com; fantasy draft tools; contact hello@dukefantasy.com)"

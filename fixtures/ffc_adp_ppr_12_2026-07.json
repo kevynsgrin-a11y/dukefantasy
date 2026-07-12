@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "source": "Fantasy Football Calculator ADP REST API — GET /api/v1/adp/ppr?teams=12&year=2026 (illustrative shape; NOT live — egress-blocked)",
+    "attribution_required": "ADP data by Fantasy Football Calculator",
+    "last_verified": "2026-07-12 (shape from help.fantasyfootballcalculator.com/article/42-adp-rest-api)"
+  },
+  "status": "Success",
+  "meta": { "type": "ppr", "teams": 12, "rounds": 15, "total_drafts": 412, "start_date": "2026-06-15", "end_date": "2026-07-12" },
+  "players": [
+    { "player_id": 4881, "name": "Justin Jefferson", "position": "WR", "team": "MIN", "adp": 1.8, "adp_formatted": "1.02", "times_drafted": 401, "high": 1, "low": 4, "stdev": 0.7, "bye": 6 },
+    { "player_id": 1897, "name": "Christian McCaffrey", "position": "RB", "team": "SF", "adp": 3.1, "adp_formatted": "1.03", "times_drafted": 398, "high": 1, "low": 7, "stdev": 1.4, "bye": 8 },
+    { "player_id": 3312, "name": "Amon-Ra St. Brown", "position": "WR", "team": "DET", "adp": 6.4, "adp_formatted": "1.06", "times_drafted": 390, "high": 3, "low": 12, "stdev": 1.9, "bye": 6 },
+    { "player_id": 5001, "name": "Marvin Harrison Jr.", "position": "WR", "team": "ARI", "adp": 9.7, "adp_formatted": "1.10", "times_drafted": 380, "high": 5, "low": 18, "stdev": 2.6, "bye": 14 },
+    { "player_id": 4602, "name": "Kenneth Walker III", "position": "RB", "team": "SEA", "adp": 23.5, "adp_formatted": "2.12", "times_drafted": 360, "high": 15, "low": 34, "stdev": 4.1, "bye": 11 },
+    { "player_id": 3901, "name": "Josh Allen", "position": "QB", "team": "BUF", "adp": 58.1, "adp_formatted": "5.10", "times_drafted": 320, "high": 40, "low": 78, "stdev": 8.2, "bye": 7 },
+    { "player_id": 2211, "name": "Patrick Mahomes", "position": "QB", "team": "KC", "adp": 61.4, "adp_formatted": "6.01", "times_drafted": 318, "high": 44, "low": 82, "stdev": 8.6, "bye": 5 },
+    { "player_id": 4110, "name": "D'Andre Swift", "position": "RB", "team": "CHI", "adp": 66.2, "adp_formatted": "6.06", "times_drafted": 300, "high": 48, "low": 95, "stdev": 9.9, "bye": 10 },
+    { "player_id": 9001, "name": "San Francisco 49ers", "position": "DEF", "team": "SF", "adp": 142.7, "adp_formatted": "12.11", "times_drafted": 210, "high": 120, "low": 168, "stdev": 12.1, "bye": 8 }
+  ]
+}

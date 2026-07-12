@@ -1,0 +1,15 @@
+{
+  "_meta": {
+    "source": "Sleeper /v1/state/nfl (illustrative offseason snapshot; NOT live — egress-blocked)",
+    "last_verified": "2026-07-12 (shape from docs.sleeper.com)"
+  },
+  "week": 1,
+  "season_type": "off",
+  "season": "2026",
+  "previous_season": "2025",
+  "season_start_date": "2026-09-10",
+  "leg": 1,
+  "league_season": "2026",
+  "league_create_season": "2026",
+  "display_week": 1
+}

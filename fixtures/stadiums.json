@@ -1,0 +1,293 @@
+{
+ "source": "ThompsonJamesBliss/WeatherData stadium_coordinates.csv",
+ "teams": {
+  "NO": {
+   "team": "NO",
+   "stadium": "Alamodome",
+   "lat": 29.416944,
+   "lon": -98.478889,
+   "roof": "dome",
+   "roof_raw": "Indoor",
+   "altitude_ft": 0
+  },
+  "LV": {
+   "team": "LV",
+   "stadium": "Allegiant Stadium",
+   "lat": 36.09075,
+   "lon": -115.183722,
+   "roof": "dome",
+   "roof_raw": "Indoor",
+   "altitude_ft": 0
+  },
+  "KC": {
+   "team": "KC",
+   "stadium": "Arrowhead Stadium",
+   "lat": 39.048889,
+   "lon": -94.483889,
+   "roof": "outdoor",
+   "roof_raw": "Outdoor",
+   "altitude_ft": 0
+  },
+  "DAL": {
+   "team": "DAL",
+   "stadium": "AT&T Stadium",
+   "lat": 32.747778,
+   "lon": -97.092778,
+   "roof": "retractable",
+   "roof_raw": "Retractable",
+   "altitude_ft": 0
+  },
+  "CAR": {
+   "team": "CAR",
+   "stadium": "Bank of America Stadium",
+   "lat": 35.225833,
+   "lon": -80.852778,
+   "roof": "outdoor",
+   "roof_raw": "Outdoor",
+   "altitude_ft": 0
+  },
+  "SF": {
+   "team": "SF",
+   "stadium": "Candlestick Park",
+   "lat": 37.713611,
+   "lon": -122.386111,
+   "roof": "outdoor",
+   "roof_raw": "Outdoor",
+   "altitude_ft": 0
+  },
+  "SEA": {
+   "team": "SEA",
+   "stadium": "CenturyLink Field",
+   "lat": 47.5952,
+   "lon": -122.3316,
+   "roof": "outdoor",
+   "roof_raw": "Outdoor",
+   "altitude_ft": 0
+  },
+  "LAC": {
+   "team": "LAC",
+   "stadium": "Dignity Health Sports Park",
+   "lat": 33.864,
+   "lon": -118.261,
+   "roof": "outdoor",
+   "roof_raw": "Outdoor",
+   "altitude_ft": 0
+  },
+  "DEN": {
+   "team": "DEN",
+   "stadium": "Empower Field at Mile High",
+   "lat": 39.743889,
+   "lon": -105.02,
+   "roof": "outdoor",
+   "roof_raw": "Outdoor",
+   "altitude_ft": 5280
+  },
+  "WAS": {
+   "team": "WAS",
+   "stadium": "FedExField",
+   "lat": 38.907778,
+   "lon": -76.864444,
+   "roof": "outdoor",
+   "roof_raw": "Outdoor",
+   "altitude_ft": 0
+  },
+  "CLE": {
+   "team": "CLE",
+   "stadium": "FirstEnergy Stadium",
+   "lat": 41.506111,
+   "lon": -81.699444,
+   "roof": "outdoor",
+   "roof_raw": "Outdoor",
+   "altitude_ft": 0
+  },
+  "DET": {
+   "team": "DET",
+   "stadium": "Ford Field",
+   "lat": 42.34,
+   "lon": -83.045556,
+   "roof": "dome",
+   "roof_raw": "Indoor",
+   "altitude_ft": 0
+  },
+  "NE": {
+   "team": "NE",
+   "stadium": "Foxboro Stadium",
+   "lat": 42.0927,
+   "lon": -71.267442,
+   "roof": "outdoor",
+   "roof_raw": "Outdoor",
+   "altitude_ft": 0
+  },
+  "ATL": {
+   "team": "ATL",
+   "stadium": "Georgia Dome",
+   "lat": 33.758,
+   "lon": -84.401,
+   "roof": "dome",
+   "roof_raw": "Indoor",
+   "altitude_ft": 0
+  },
+  "NYG": {
+   "team": "NYG",
+   "stadium": "Giants Stadium",
+   "lat": 40.812222,
+   "lon": -74.076944,
+   "roof": "outdoor",
+   "roof_raw": "Outdoor",
+   "altitude_ft": 0
+  },
+  "NYJ": {
+   "team": "NYJ",
+   "stadium": "Giants Stadium",
+   "lat": 40.812222,
+   "lon": -74.076944,
+   "roof": "outdoor",
+   "roof_raw": "Outdoor",
+   "altitude_ft": 0
+  },
+  "MIA": {
+   "team": "MIA",
+   "stadium": "Hard Rock Stadium",
+   "lat": 25.958056,
+   "lon": -80.238889,
+   "roof": "outdoor",
+   "roof_raw": "Outdoor",
+   "altitude_ft": 0
+  },
+  "PIT": {
+   "team": "PIT",
+   "stadium": "Heinz Field",
+   "lat": 40.446667,
+   "lon": -80.015833,
+   "roof": "outdoor",
+   "roof_raw": "Outdoor",
+   "altitude_ft": 0
+  },
+  "GB": {
+   "team": "GB",
+   "stadium": "Lambeau Field",
+   "lat": 44.501389,
+   "lon": -88.062222,
+   "roof": "outdoor",
+   "roof_raw": "Outdoor",
+   "altitude_ft": 0
+  },
+  "PHI": {
+   "team": "PHI",
+   "stadium": "Lincoln Financial Field",
+   "lat": 39.900833,
+   "lon": -75.1675,
+   "roof": "outdoor",
+   "roof_raw": "Outdoor",
+   "altitude_ft": 0
+  },
+  "LAR": {
+   "team": "LAR",
+   "stadium": "Los Angeles Memorial Coliseum",
+   "lat": 34.014167,
+   "lon": -118.287778,
+   "roof": "outdoor",
+   "roof_raw": "Outdoor",
+   "altitude_ft": 0
+  },
+  "IND": {
+   "team": "IND",
+   "stadium": "Lucas Oil Stadium",
+   "lat": 39.760056,
+   "lon": -86.162806,
+   "roof": "retractable",
+   "roof_raw": "Retractable",
+   "altitude_ft": 0
+  },
+  "BAL": {
+   "team": "BAL",
+   "stadium": "M&T Bank Stadium",
+   "lat": 39.278056,
+   "lon": -76.622778,
+   "roof": "outdoor",
+   "roof_raw": "Outdoor",
+   "altitude_ft": 0
+  },
+  "CHI": {
+   "team": "CHI",
+   "stadium": "Memorial Stadium",
+   "lat": 40.09916667,
+   "lon": -88.23583333,
+   "roof": "outdoor",
+   "roof_raw": "Outdoor",
+   "altitude_ft": 0
+  },
+  "BUF": {
+   "team": "BUF",
+   "stadium": "New Era Field",
+   "lat": 42.774,
+   "lon": -78.787,
+   "roof": "outdoor",
+   "roof_raw": "Outdoor",
+   "altitude_ft": 0
+  },
+  "TEN": {
+   "team": "TEN",
+   "stadium": "Nissan Stadium",
+   "lat": 36.166389,
+   "lon": -86.771389,
+   "roof": "outdoor",
+   "roof_raw": "Outdoor",
+   "altitude_ft": 0
+  },
+  "HOU": {
+   "team": "HOU",
+   "stadium": "NRG Stadium",
+   "lat": 29.684722,
+   "lon": -95.410833,
+   "roof": "retractable",
+   "roof_raw": "Retractable",
+   "altitude_ft": 0
+  },
+  "CIN": {
+   "team": "CIN",
+   "stadium": "Paul Brown Stadium",
+   "lat": 39.095,
+   "lon": -84.516,
+   "roof": "outdoor",
+   "roof_raw": "Outdoor",
+   "altitude_ft": 0
+  },
+  "TB": {
+   "team": "TB",
+   "stadium": "Raymond James Stadium",
+   "lat": 27.975833,
+   "lon": -82.503333,
+   "roof": "outdoor",
+   "roof_raw": "Outdoor",
+   "altitude_ft": 0
+  },
+  "ARI": {
+   "team": "ARI",
+   "stadium": "State Farm Stadium",
+   "lat": 33.528,
+   "lon": -112.263,
+   "roof": "retractable",
+   "roof_raw": "Retractable",
+   "altitude_ft": 0
+  },
+  "MIN": {
+   "team": "MIN",
+   "stadium": "TCF Bank Stadium",
+   "lat": 44.976,
+   "lon": -93.225,
+   "roof": "outdoor",
+   "roof_raw": "Outdoor",
+   "altitude_ft": 0
+  },
+  "JAX": {
+   "team": "JAX",
+   "stadium": "TIAA Bank Field",
+   "lat": 30.323889,
+   "lon": -81.6375,
+   "roof": "outdoor",
+   "roof_raw": "Outdoor",
+   "altitude_ft": 0
+  }
+ }
+}

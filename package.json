@@ -1,0 +1,31 @@
+{
+  "name": "dukefantasy",
+  "version": "0.1.0",
+  "private": true,
+  "description": "DukeFantasy — fantasy football draft HQ: provably-fair draft-order reveal + a no-login utility belt on permitted open data. Market data + fair tools, no hot takes.",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node --test",
+    "test:watch": "node --test --watch",
+    "build": "node scripts/build.js",
+    "dev": "npm run build && npx wrangler pages dev public",
+    "serve": "node scripts/serve.js",
+    "e2e": "npm run build && node scripts/e2e.js",
+    "deploy": "npm run build && npx wrangler pages deploy public --project-name dukefantasy",
+    "predeploy": "npm test"
+  },
+  "keywords": [
+    "fantasy-football",
+    "draft-order",
+    "adp",
+    "commit-reveal",
+    "cloudflare-pages"
+  ],
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "playwright-core": "^1.61.1"
+  }
+}

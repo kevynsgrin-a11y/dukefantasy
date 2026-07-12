@@ -1,0 +1,15 @@
+{
+  "_meta": {
+    "source": "Sleeper /v1/players/nfl/trending/add?lookback_hours=24&limit=25 (illustrative; NOT live — egress-blocked)",
+    "shape": "array of {player_id, count} sorted by count desc; join player_id to the cached players DB",
+    "note": "player_ids here reference fixtures/sleeper_players_sample.json for the join test",
+    "last_verified": "2026-07-12"
+  },
+  "trending": [
+    { "player_id": "11584", "count": 48213 },
+    { "player_id": "8151", "count": 22740 },
+    { "player_id": "6813", "count": 15980 },
+    { "player_id": "6801", "count": 9120 },
+    { "player_id": "SF", "count": 3110 }
+  ]
+}
