@@ -1,0 +1,22 @@
+/* =============================================================================
+   DukeFantasy — brand.css  (v0 SKIN LAYER — intentionally near-empty)
+
+   This file is loaded AFTER theme.css. It is where v0 (or a designer) applies
+   the "draft-night broadcast graphics, big-board energy" aesthetic WITHOUT
+   touching markup or engines: override the design tokens in :root, restyle the
+   component classes (.reveal-stage, .commitment-badge, .countdown, .tool-card,
+   .btn-primary, etc.), swap fonts, add motion.
+
+   The engine JSON contracts and the component class names are the stable
+   interface — see docs/v0-handoff.md. Keep this file additive.
+   ============================================================================= */
+
+/* Example hook (commented — v0 fills this in):
+:root {
+  --brand: #0a5c34;
+  --accent: #f2b705;
+  --font-sans: "Your Brand Font", system-ui, sans-serif;
+}
+.reveal-stage { background: radial-gradient(circle at 50% 0%, var(--brand-soft), transparent 70%); }
+.reveal-pick { text-shadow: 0 2px 30px color-mix(in srgb, var(--accent) 50%, transparent); }
+*/

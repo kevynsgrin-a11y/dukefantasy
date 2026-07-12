@@ -1,0 +1,86 @@
+{
+  "_meta": {
+    "source": "Sleeper /v1/players/nfl (representative sample; NOT live — egress-blocked this session)",
+    "shape": "object keyed by player_id; each value is a player object. Full DB is ~5MB / thousands of players.",
+    "purpose": "name-matching test corpus + identity crosswalk fixture (GV7 vectors included)",
+    "last_verified": "2026-07-12 (shape from docs.sleeper.com; values illustrative)"
+  },
+  "4034": {
+    "player_id": "4034", "first_name": "Christian", "last_name": "McCaffrey",
+    "full_name": "Christian McCaffrey", "search_full_name": "christianmccaffrey",
+    "position": "RB", "fantasy_positions": ["RB"], "team": "SF", "status": "Active",
+    "espn_id": 3117251, "yahoo_id": 30121, "rotowire_id": 11760, "sportradar_id": "a51c78a6-x", "gsis_id": "00-0033280", "search_rank": 3
+  },
+  "6801": {
+    "player_id": "6801", "first_name": "Amon-Ra", "last_name": "St. Brown",
+    "full_name": "Amon-Ra St. Brown", "search_full_name": "amonrastbrown",
+    "position": "WR", "fantasy_positions": ["WR"], "team": "DET", "status": "Active",
+    "espn_id": 4374302, "yahoo_id": 33265, "rotowire_id": 14785, "gsis_id": "00-0036973", "search_rank": 12
+  },
+  "8151": {
+    "player_id": "8151", "first_name": "Kenneth", "last_name": "Walker",
+    "full_name": "Kenneth Walker III", "search_full_name": "kennethwalkeriii",
+    "position": "RB", "fantasy_positions": ["RB"], "team": "SEA", "status": "Active",
+    "espn_id": 4567048, "yahoo_id": 34007, "rotowire_id": 15833, "gsis_id": "00-0037746", "search_rank": 40
+  },
+  "6813": {
+    "player_id": "6813", "first_name": "D'Andre", "last_name": "Swift",
+    "full_name": "D'Andre Swift", "search_full_name": "dandreswift",
+    "position": "RB", "fantasy_positions": ["RB"], "team": "CHI", "status": "Active",
+    "espn_id": 4259545, "yahoo_id": 32724, "rotowire_id": 14150, "gsis_id": "00-0036098", "search_rank": 78
+  },
+  "4046": {
+    "player_id": "4046", "first_name": "Patrick", "last_name": "Mahomes",
+    "full_name": "Patrick Mahomes", "search_full_name": "patrickmahomes",
+    "position": "QB", "fantasy_positions": ["QB"], "team": "KC", "status": "Active",
+    "espn_id": 3139477, "yahoo_id": 30123, "rotowire_id": 11839, "gsis_id": "00-0033873", "search_rank": 22
+  },
+  "6794": {
+    "player_id": "6794", "first_name": "Justin", "last_name": "Jefferson",
+    "full_name": "Justin Jefferson", "search_full_name": "justinjefferson",
+    "position": "WR", "fantasy_positions": ["WR"], "team": "MIN", "status": "Active",
+    "espn_id": 4262921, "yahoo_id": 32692, "rotowire_id": 14186, "gsis_id": "00-0036322", "search_rank": 1
+  },
+  "6786": {
+    "player_id": "6786", "first_name": "Josh", "last_name": "Allen",
+    "full_name": "Josh Allen", "search_full_name": "joshallen",
+    "position": "QB", "fantasy_positions": ["QB"], "team": "BUF", "status": "Active",
+    "espn_id": 3918298, "yahoo_id": 30977, "rotowire_id": 12507, "gsis_id": "00-0034857", "search_rank": 25
+  },
+  "5533": {
+    "player_id": "5533", "first_name": "Josh", "last_name": "Allen",
+    "full_name": "Josh Allen", "search_full_name": "joshallen",
+    "position": "DE", "fantasy_positions": ["DL", "DE"], "team": "JAX", "status": "Active",
+    "espn_id": 3915511, "yahoo_id": 31481, "rotowire_id": 13160, "gsis_id": "00-0035690", "search_rank": 600
+  },
+  "1466": {
+    "player_id": "1466", "first_name": "Michael", "last_name": "Thomas",
+    "full_name": "Michael Thomas", "search_full_name": "michaelthomas",
+    "position": "WR", "fantasy_positions": ["WR"], "team": "NO", "status": "Inactive",
+    "espn_id": 2976316, "yahoo_id": 29275, "rotowire_id": 11148, "gsis_id": "00-0032765", "search_rank": 900
+  },
+  "2306": {
+    "player_id": "2306", "first_name": "Michael", "last_name": "Thomas",
+    "full_name": "Michael Thomas", "search_full_name": "michaelthomas",
+    "position": "S", "fantasy_positions": ["DB", "S"], "team": "HOU", "status": "Inactive",
+    "espn_id": 2515151, "yahoo_id": 27700, "rotowire_id": 10233, "gsis_id": "00-0031000", "search_rank": 1200
+  },
+  "11584": {
+    "player_id": "11584", "first_name": "Marvin", "last_name": "Harrison",
+    "full_name": "Marvin Harrison Jr.", "search_full_name": "marvinharrisonjr",
+    "position": "WR", "fantasy_positions": ["WR"], "team": "ARI", "status": "Active",
+    "espn_id": 4432708, "yahoo_id": 40151, "rotowire_id": 18401, "gsis_id": "00-0039337", "search_rank": 18
+  },
+  "SF": {
+    "player_id": "SF", "first_name": "San Francisco", "last_name": "49ers",
+    "full_name": "San Francisco 49ers", "position": "DEF", "fantasy_positions": ["DEF"], "team": "SF", "status": "Active"
+  },
+  "DAL": {
+    "player_id": "DAL", "first_name": "Dallas", "last_name": "Cowboys",
+    "full_name": "Dallas Cowboys", "position": "DEF", "fantasy_positions": ["DEF"], "team": "DAL", "status": "Active"
+  },
+  "NYJ": {
+    "player_id": "NYJ", "first_name": "New York", "last_name": "Jets",
+    "full_name": "New York Jets", "position": "DEF", "fantasy_positions": ["DEF"], "team": "NYJ", "status": "Active"
+  }
+}

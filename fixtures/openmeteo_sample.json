@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "source": "Open-Meteo /v1/forecast (illustrative shape; NOT live — egress-blocked). Params: hourly=temperature_2m,precipitation,precipitation_probability,windspeed_10m,windgusts_10m,weathercode&windspeed_unit=mph&temperature_unit=fahrenheit&precipitation_unit=inch",
+    "attribution_required": "Weather data by Open-Meteo.com",
+    "last_verified": "2026-07-12 (shape from open-meteo.com/en/docs)"
+  },
+  "latitude": 39.74,
+  "longitude": -105.02,
+  "timezone": "America/Denver",
+  "hourly_units": { "time": "iso8601", "temperature_2m": "°F", "precipitation": "inch", "precipitation_probability": "%", "windspeed_10m": "mph", "windgusts_10m": "mph", "weathercode": "wmo code" },
+  "hourly": {
+    "time": ["2026-09-13T11:00", "2026-09-13T12:00", "2026-09-13T13:00", "2026-09-13T14:00", "2026-09-13T15:00", "2026-09-13T16:00"],
+    "temperature_2m": [58, 62, 66, 69, 71, 70],
+    "precipitation": [0.0, 0.0, 0.01, 0.03, 0.0, 0.0],
+    "precipitation_probability": [5, 10, 35, 55, 20, 10],
+    "windspeed_10m": [9, 12, 18, 22, 16, 14],
+    "windgusts_10m": [14, 20, 28, 34, 25, 21],
+    "weathercode": [1, 2, 61, 63, 3, 2]
+  }
+}
