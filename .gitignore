@@ -19,8 +19,9 @@ public/og/
 .dev.vars
 dist/
 
-# throwaway visual-proof screenshots
+# throwaway visual-proof screenshots + lighthouse reports
 scratch-shots/
+scratch-lh/
 
 # os / editor
 .DS_Store

@@ -14,6 +14,7 @@
     "dev": "npm run build && npx wrangler pages dev public",
     "serve": "node scripts/serve.js",
     "e2e": "npm run build && node scripts/e2e.js",
+    "verify-sources": "node scripts/verify-sources.js",
     "deploy": "npm run build && npx wrangler pages deploy public --project-name dukefantasy",
     "predeploy": "npm test"
   },
@@ -26,6 +27,7 @@
   ],
   "license": "UNLICENSED",
   "devDependencies": {
+    "lighthouse": "^13.4.0",
     "playwright-core": "^1.61.1"
   }
 }
