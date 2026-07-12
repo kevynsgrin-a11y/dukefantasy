@@ -12,6 +12,8 @@
     "test:watch": "node --test --watch",
     "build": "node scripts/build.js",
     "dev": "npm run build && npx wrangler pages dev public",
+    "serve": "node scripts/serve.js",
+    "e2e": "npm run build && node scripts/e2e.js",
     "deploy": "npm run build && npx wrangler pages deploy public --project-name dukefantasy",
     "predeploy": "npm test"
   },

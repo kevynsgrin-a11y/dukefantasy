@@ -19,6 +19,9 @@ public/og/
 .dev.vars
 dist/
 
+# throwaway visual-proof screenshots
+scratch-shots/
+
 # os / editor
 .DS_Store
 *.log

@@ -41,58 +41,86 @@ async function main() {
   const results = { pages: [], errors: [], loop: null };
 
   try {
-    // 1) Load every page, collect errors.
+    // Pages whose tool renders from a data feed — after edge→fixture fallback we
+    // assert the UI actually populated (proves the fallback path works).
+    const RENDERS = {
+      '/adp/': 'table tbody tr',
+      '/adp/compare/': 'table tbody tr',
+      '/tiers/': '.card, table tbody tr',
+      '/bye-weeks-2026/': 'table tbody tr',
+      '/waiver-radar/': 'table tbody tr',
+      '/weather/': '.card, .chip',
+      '/snake-draft-pick-calculator/': '.badge, table tbody tr, li',
+    };
+
+    // 1) Load every page, collect REAL errors (an /api/feed 404 is the expected
+    // fallback path on a static server with no Functions — not a defect).
     for (const path of PAGES) {
       const page = await browser.newPage();
       const errs = [];
-      page.on('console', (m) => { if (m.type() === 'error') errs.push(m.text()); });
+      const bad4xx = [];
       page.on('pageerror', (e) => errs.push('pageerror: ' + e.message));
+      page.on('response', (r) => {
+        const u = r.url();
+        if (r.status() >= 400 && u.startsWith(BASE) && !u.includes('/api/feed/') && !u.endsWith('/404')) {
+          bad4xx.push(`${r.status()} ${u.replace(BASE, '')}`);
+        }
+      });
       const resp = await page.goto(BASE + path, { waitUntil: 'networkidle', timeout: 20000 });
-      await page.waitForTimeout(300);
+      await page.waitForTimeout(400);
       const status = resp ? resp.status() : 0;
-      // ignore benign clipboard/fetch-abort noise
-      const real = errs.filter((e) => !/clipboard|Failed to load resource.*favicon/i.test(e));
-      results.pages.push({ path, status, errors: real });
+      let renderErr = null;
+      if (RENDERS[path]) {
+        const count = await page.locator(RENDERS[path]).count().catch(() => 0);
+        if (count === 0) renderErr = `expected content "${RENDERS[path]}" did not render`;
+      }
+      const real = [...errs, ...bad4xx, ...(renderErr ? [renderErr] : [])];
+      results.pages.push({ path, status, errors: real, rendered: RENDERS[path] ? !renderErr : undefined });
       if (real.length) results.errors.push({ path, errors: real });
       await page.close();
     }
 
     // 2) Flagship loop: run -> share link -> verify (fresh page).
-    const rp = await browser.newPage();
-    const rpErr = [];
-    rp.on('pageerror', (e) => rpErr.push(e.message));
-    await rp.goto(BASE + '/draft-order-randomizer/', { waitUntil: 'networkidle' });
-    await rp.fill('textarea[name=teams]', ['Alpha', 'Bravo', 'Charlie', 'Delta', 'Echo', 'Foxtrot'].join('\n'));
-    await rp.selectOption('select[name=mode]', 'instant');
-    await rp.click('button[type=submit]');
-    await rp.waitForSelector('.commitment-badge', { timeout: 8000 });
-    const commitment = (await rp.textContent('.commitment-badge')).trim();
-    await rp.click('button:has-text("Reveal the order")');
-    await rp.waitForSelector('a:has-text("Open verifier")', { timeout: 8000 });
-    const verifyHref = await rp.getAttribute('a:has-text("Open verifier")', 'href');
-    const revealOrder = await rp.$$eval('table tbody tr td:nth-child(2)', (tds) => tds.map((t) => t.textContent.trim()));
+    try {
+      const rp = await browser.newPage();
+      const rpErr = [];
+      rp.on('pageerror', (e) => rpErr.push(e.message));
+      await rp.goto(BASE + '/draft-order-randomizer/', { waitUntil: 'networkidle' });
+      await rp.fill('textarea[name=teams]', ['Alpha', 'Bravo', 'Charlie', 'Delta', 'Echo', 'Foxtrot'].join('\n'));
+      await rp.selectOption('select[name=mode]', 'instant');
+      await rp.click('button[type=submit]');
+      await rp.waitForSelector('.commitment-badge', { timeout: 8000 });
+      const commitment = (await rp.textContent('.commitment-badge')).trim();
+      await rp.click('button:has-text("Reveal the order")');
+      await rp.waitForSelector('a:has-text("Open verifier")', { timeout: 8000 });
+      const verifyHref = await rp.getAttribute('a:has-text("Open verifier")', 'href');
+      const revealOrder = await rp.$$eval('table tbody tr td:nth-child(2)', (tds) => tds.map((t) => t.textContent.trim()));
 
-    // Fresh page -> the share link.
-    const vp = await browser.newPage();
-    const vpErr = [];
-    vp.on('pageerror', (e) => vpErr.push(e.message));
-    await vp.goto(verifyHref, { waitUntil: 'networkidle' });
-    // Put the pre-reveal commitment in and verify.
-    await vp.fill('input[name=commitment]', commitment);
-    await vp.click('button:has-text("Verify")');
-    await vp.waitForSelector('.verify-ok, .verify-bad', { timeout: 8000 });
-    const okText = await vp.textContent('.verify-ok').catch(() => null);
-    const reproduced = await vp.$$eval('.verify-result table tbody tr td:nth-child(2)', (tds) => tds.map((t) => t.textContent.trim()));
+      // Fresh page -> the share link, rewritten onto the local server (real links
+      // use the production origin, which is correct app behavior).
+      const frag = verifyHref.includes('#') ? '#' + verifyHref.split('#')[1] : '';
+      const vp = await browser.newPage();
+      const vpErr = [];
+      vp.on('pageerror', (e) => vpErr.push(e.message));
+      await vp.goto(BASE + '/verify/' + frag, { waitUntil: 'networkidle' });
+      await vp.fill('input[name=commitment]', commitment);
+      await vp.click('button:has-text("Verify")');
+      await vp.waitForSelector('.verify-ok, .verify-bad', { timeout: 8000 });
+      const okText = await vp.textContent('.verify-ok').catch(() => null);
+      const reproduced = await vp.$$eval('.verify-result table tbody tr td:nth-child(2)', (tds) => tds.map((t) => t.textContent.trim()));
 
-    const orderMatches = JSON.stringify(revealOrder) === JSON.stringify(reproduced) && revealOrder.length === 6;
-    results.loop = {
-      commitmentCaptured: !!commitment && commitment.length === 64,
-      verifiedOk: !!okText,
-      orderMatches,
-      revealOrder, reproduced,
-      errors: [...rpErr, ...vpErr],
-    };
-    await rp.close(); await vp.close();
+      const orderMatches = JSON.stringify(revealOrder) === JSON.stringify(reproduced) && revealOrder.length === 6;
+      results.loop = {
+        commitmentCaptured: !!commitment && commitment.length === 64,
+        verifiedOk: !!okText,
+        orderMatches,
+        revealOrder, reproduced,
+        errors: [...rpErr, ...vpErr],
+      };
+      await rp.close(); await vp.close();
+    } catch (err) {
+      results.loop = { commitmentCaptured: false, verifiedOk: false, orderMatches: false, errors: ['loop threw: ' + err.message] };
+    }
   } finally {
     await browser.close();
     server.kill();
