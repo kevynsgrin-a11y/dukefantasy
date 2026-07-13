@@ -140,8 +140,29 @@ function wireEmailCapture(form) {
   });
 }
 
+/* ---------- a11y net: ensure every control has an accessible name ---------- */
+function nameControls(root = document) {
+  for (const el of root.querySelectorAll('select:not([aria-label]):not([aria-labelledby]), input:not([type=hidden]):not([aria-label]):not([aria-labelledby])')) {
+    if (el.id && document.querySelector(`label[for="${CSS.escape(el.id)}"]`)) continue;
+    if (el.closest('label')) continue;
+    const lbl = el.closest('.field, .row, .stack')?.querySelector('label')?.textContent
+      || el.getAttribute('placeholder') || el.name;
+    if (lbl) el.setAttribute('aria-label', lbl.trim());
+  }
+}
+
 /* ---------- chrome enhancement (auto-run) ---------- */
 function initChrome() {
+  nameControls();
+  // Tool modules render controls after load — keep naming them as they appear.
+  if ('MutationObserver' in window) {
+    const mo = new MutationObserver((muts) => {
+      for (const m of muts) for (const n of m.addedNodes) {
+        if (n.nodeType === 1) { if (n.matches?.('select,input')) nameControls(n.parentNode || document); else nameControls(n); }
+      }
+    });
+    mo.observe(document.body, { childList: true, subtree: true });
+  }
   // Mobile nav toggle.
   const toggle = $('.nav-toggle');
   const nav = $('#site-nav');

@@ -15,7 +15,7 @@
   --surface-2: #f0f2f5;
   --ink: #14171c;
   --ink-soft: #48505c;
-  --ink-faint: #6b7480;
+  --ink-faint: #5c626e; /* WCAG AA: >=4.5:1 on bg/surface-2 */
   --line: #dde1e7;
   --line-strong: #c3c9d2;
 
@@ -26,7 +26,7 @@
   --accent-soft: #f7edd3;
 
   --ok: #1a7f43;
-  --warn: #a15c00;
+  --warn: #875000; /* WCAG AA on accent-soft */
   --danger: #b3261e;
   --info: #1f5fa8;
 
@@ -81,7 +81,7 @@
 }
 :root[data-theme="light"] {
   --bg: #f7f8fa; --surface: #ffffff; --surface-2: #f0f2f5;
-  --ink: #14171c; --ink-soft: #48505c; --ink-faint: #6b7480;
+  --ink: #14171c; --ink-soft: #48505c; --ink-faint: #5c626e; --warn: #875000;
   --line: #dde1e7; --line-strong: #c3c9d2;
   --brand: #0b6b3a; --brand-ink: #ffffff; --brand-soft: #e3f2e9;
   --accent: #b8860b; --accent-soft: #f7edd3;
@@ -187,6 +187,10 @@ tbody tr:hover { background: var(--surface-2); }
 .sources-block { font-size: .85rem; color: var(--ink-faint); border-top: 1px solid var(--line); padding-top: var(--space-4); margin-top: var(--space-5); }
 
 /* ---- tool page frame: tool above the fold, explainer below ---- */
+/* Reserve space for JS-mounted tools so injecting their content doesn't shift
+   the explainer below (CLS). Renders instantly; the reserve just holds the box. */
+[id$="-app"] { min-height: 440px; }
+#namegen-app, #countdown-app { min-height: 300px; }
 .tool-hero { padding: var(--space-6) 0 var(--space-4); }
 .tool-body { padding-bottom: var(--space-6); }
 .explainer { border-top: 1px solid var(--line); padding-top: var(--space-6); }

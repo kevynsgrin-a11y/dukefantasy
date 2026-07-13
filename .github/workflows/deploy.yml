@@ -1,0 +1,54 @@
+name: Deploy to Cloudflare Pages
+
+# Manual, push-button deploy (never auto-fires). A GitHub runner has open egress,
+# so it can run the live source-verification gate that the dev container can't:
+# it fetches Sleeper / FFC / Open-Meteo, refreshes fixtures, flips sources.json
+# to "verified", THEN deploys. Deploy only proceeds if that gate passes.
+#
+# Required repo secrets (Settings -> Secrets and variables -> Actions):
+#   CLOUDFLARE_API_TOKEN   - a token with "Cloudflare Pages: Edit"
+#   CLOUDFLARE_ACCOUNT_ID  - your account id
+on:
+  workflow_dispatch:
+    inputs:
+      skip_live_verify:
+        description: 'Skip live source re-verification (deploy on frozen fixtures)'
+        type: boolean
+        default: false
+
+concurrency:
+  group: pages-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+      - run: npm ci
+
+      - name: Engine golden tests
+        run: npm test
+
+      - name: Live source verification gate (open egress on the runner)
+        if: ${{ !inputs.skip_live_verify }}
+        run: node scripts/verify-sources.js --write
+
+      - name: Build static site
+        run: npm run build
+
+      - name: Deploy to Cloudflare Pages
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then
+            echo "::error::CLOUDFLARE_API_TOKEN / CLOUDFLARE_ACCOUNT_ID secrets are not set. Add them in repo settings, then re-run."
+            exit 1
+          fi
+          npx --yes wrangler@4 pages deploy public --project-name dukefantasy --commit-dirty=true

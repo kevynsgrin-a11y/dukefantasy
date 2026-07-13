@@ -19,19 +19,33 @@ infra work around it.
 
 ## Deploy
 
+**Push-button (recommended):** the `Deploy to Cloudflare Pages` GitHub Action
+(`.github/workflows/deploy.yml`, manual `workflow_dispatch`). A runner has open
+egress, so it runs the live source-verification gate the dev container can't,
+then deploys. Add repo secrets `CLOUDFLARE_API_TOKEN` (scope: Pages: Edit) and
+`CLOUDFLARE_ACCOUNT_ID`, then Actions → Deploy → Run.
+
+**Manual / local (needs open egress + Cloudflare auth):**
 ```
-npm test                 # gate: all engine goldens green
-npm run build            # copies engines+fixtures, generates HTML/sitemap/etc.
+npm test                              # gate: all engine goldens green
+node scripts/verify-sources.js --write  # live-verify feeds, refresh fixtures, flip sources.json
+npm run build                         # copies engines+fixtures, generates HTML/sitemap/etc.
 npx wrangler pages deploy public --project-name dukefantasy
 ```
 Post-deploy once: attach custom domain `dukefantasy.com`, submit
 `sitemap.xml` to Google Search Console, fill `ads.txt`, place cross-links to
 Sports-Always / Nino34, and confirm the daily snapshot Worker + cron.
 
+**Lighthouse gate (met):** desktop scores on the built site — `/` 100/100/96/100,
+randomizer 100/100/100/100, `/adp/` 100/100/96/100 (perf/a11y/best-practices/seo).
+Re-check with `npx lighthouse <url> --preset=desktop` against `npm run serve`.
+
 ## Pre-launch gate (blocking)
 - [ ] `data/sources.json`: every SHIPPED feed `status: "verified"` and
-      `tos ∈ {open, permitted}`. Re-verify the egress-blocked feeds live from
-      Cloudflare per `docs/VERIFICATION_NEEDED.md`, refreeze fixtures.
+      `tos ∈ {open, permitted}`. Run `node scripts/verify-sources.js --write`
+      from an open-egress environment (or let the deploy Action do it) — it
+      fetches each feed, validates its shape, refreshes fixtures, and flips the
+      statuses. See `docs/VERIFICATION_NEEDED.md` for the manual checklist.
 - [ ] `npm test` green; Lighthouse ≥ 95/95/95 on `/`, randomizer, `/adp/`.
 - [ ] Commit–reveal loop e2e-verified on a fresh session (run → share → verify).
 - [ ] Zero console errors; all internal links resolve; feed-outage renders a
