@@ -2,9 +2,9 @@ import type { MetadataRoute } from "next";
 import { coaches, conferenceHubSlugs, teams } from "@/lib/cfb-dataset";
 
 /**
- * Detail routes are enumerated from the vendored 2026 dataset (138 real FBS
- * programs, their head coaches, and their conferences) so the sitemap can
- * never claim a page the data cannot fill.
+ * Detail routes are enumerated from the ESPN 2026 NFL dataset (32 teams and
+ * their divisions) so the sitemap can never claim a page the data cannot
+ * fill.
  */
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
@@ -26,5 +26,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     changeFrequency: "weekly",
     priority: 0.5,
   }));
-  return [...teamRoutes, ...coachRoutes, ...conferenceRoutes];
+  const featureRoutes: MetadataRoute.Sitemap = [
+    { url: "/x-and-ys", lastModified: now, changeFrequency: "weekly", priority: 0.7 },
+  ];
+  return [...teamRoutes, ...coachRoutes, ...conferenceRoutes, ...featureRoutes];
 }

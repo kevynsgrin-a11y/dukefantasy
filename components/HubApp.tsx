@@ -7,8 +7,6 @@ import {
   broadcastNote,
   coaches,
   fantasyNotes,
-  fantasyNotesAsOf,
-  fantasyNotesContext,
   games,
   getConferenceHub,
   getGame,
@@ -55,7 +53,8 @@ import { BroadcastHomepage } from "./broadcast/homepage";
 import { ScoreTicker } from "./broadcast/score-ticker";
 import { WatchPage } from "./broadcast/watch-page";
 import { CoachingLedger } from "./coaching-ledger";
-import { FantasyNotesBoard } from "./fantasy-notes-board";
+import { DfsHubPage } from "./dfs-hub";
+import { XAndYsPage } from "./x-and-ys";
 import { TeamHub } from "./team-hub/team-hub";
 import { TransferPortalBoard } from "./transfer-portal-board";
 import { FavoritesProvider, useFavoriteGesture } from "./polish/favorites";
@@ -1556,16 +1555,10 @@ export function HubApp({ path = "/" }: { path?: string }) {
   }
   else if (root === "dfs") {
     content = (
-      <FantasyNotesBoard
-        cleanMode={mode === "clean"}
-        onModeRequest={() => setModeDialogOpen(true)}
-        notes={fantasyNotes}
-        teams={teams}
-        asOf={fantasyNotesAsOf}
-        context={fantasyNotesContext}
-      />
+      <DfsHubPage />
     );
   }
+  else if (root === "x-and-ys") content = <XAndYsPage teams={teams} />;
   else if (root === "teams") content = <TeamsPage teamSlug={parts[1]} />;
   else if (root === "players" && parts[1]) {
     content = (

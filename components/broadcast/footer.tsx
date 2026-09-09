@@ -8,6 +8,7 @@ const columns = [
       ["Scores & schedules", "/scores"],
       ["All teams", "/teams"],
       ["Divisions", "/conferences"],
+      ["X & Ys film room", "/x-and-ys"],
       ["Fantasy notes", "/dfs"],
       ["Newsletter", "/newsletter"],
     ],

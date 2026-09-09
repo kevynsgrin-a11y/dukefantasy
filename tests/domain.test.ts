@@ -137,6 +137,78 @@ test("buyout applies mitigation without going negative", () => {
   );
 });
 
+test("X & Ys concept library is complete and scheme families map to real teams", async () => {
+  const { CONCEPT_LIBRARY, SCHEME_FAMILIES, TECHNIQUE_PRIMERS, WEEKLY_SPOTLIGHTS, publishedSpotlights } =
+    await import("../lib/x-and-ys.ts");
+  assert.ok(CONCEPT_LIBRARY.length >= 20, `expected a full concept library, got ${CONCEPT_LIBRARY.length}`);
+  assert.ok(CONCEPT_LIBRARY.some((c) => c.side === "pass") && CONCEPT_LIBRARY.some((c) => c.side === "run"));
+  for (const concept of CONCEPT_LIBRARY) {
+    assert.match(concept.id, /^[a-z-]+$/);
+    assert.ok(concept.macro.length > 80, `${concept.id}: macro too thin`);
+    assert.ok(concept.micro.length > 80, `${concept.id}: micro too thin`);
+    assert.ok(concept.beats.length > 5, `${concept.id}: beats missing`);
+    assert.ok(concept.tags.length >= 1, `${concept.id}: no tags`);
+  }
+  const slugs = new Set(teams.map((team) => team.slug));
+  for (const family of SCHEME_FAMILIES) {
+    assert.ok(family.teamSlugs.length >= 1, `${family.id}: no teams mapped`);
+    for (const slug of family.teamSlugs) {
+      assert.ok(slugs.has(slug), `${family.id}: unknown team slug ${slug}`);
+    }
+  }
+  assert.ok(TECHNIQUE_PRIMERS.length >= 5);
+  // Spotlight slots must never fabricate: a slot without a video has no
+  // playmaker, team, or concept attached.
+  for (const spotlight of WEEKLY_SPOTLIGHTS) {
+    if (spotlight.videoUrl === null) {
+      assert.equal(spotlight.playmaker, null);
+      assert.equal(spotlight.teamSlug, null);
+      assert.equal(spotlight.publishedAt, null);
+    } else {
+      assert.match(spotlight.videoUrl, /^https:\/\//);
+      assert.ok(spotlight.playmaker, "published spotlight needs a playmaker");
+    }
+  }
+  assert.equal(publishedSpotlights().length, 0); // nothing publishes before Week 1 completes
+});
+
+test("DFS ledger grades only published top-10 picks and reports honest accuracy", async () => {
+  const { accuracyFor, accuracyByWeek, isGraded, isHit, GRADE_DEPTH, projections, pickResults } =
+    await import("../lib/dfs-ledger.ts");
+  assert.equal(projections.length, 0); // fail-closed until picks publish
+  assert.equal(pickResults.length, 0);
+  assert.ok(GRADE_DEPTH === 10);
+
+  // Synthetic ledger to verify the math deterministically.
+  const fake: import("../lib/dfs-ledger.ts").DfsPickResult[] = [
+    { week: 1, position: "WR", player: "A", teamSlug: "t", projectedPoints: 20, projectedRank: 3, actualPoints: 18, actualRank: 4 },
+    { week: 1, position: "WR" as const, player: "B", teamSlug: "t", projectedPoints: 14, projectedRank: 8, actualPoints: 6, actualRank: 28 },
+    { week: 1, position: "QB" as const, player: "C", teamSlug: "t", projectedPoints: 22, projectedRank: 12, actualPoints: 9, actualRank: 20 },
+    { week: 2, position: "RB" as const, player: "D", teamSlug: "t", projectedPoints: 17, projectedRank: 2, actualPoints: 24, actualRank: 1 },
+  ];
+  assert.equal(isGraded(fake[0]), true);
+  assert.equal(isGraded(fake[2]), false); // rank 12 is outside grading depth
+  assert.equal(isHit(fake[0]), true);
+  assert.equal(isHit(fake[1]), false);
+  assert.equal(isHit(fake[2]), null);
+
+  const week1 = accuracyFor(fake, 1);
+  assert.equal(week1.gradedPicks, 2);
+  assert.equal(week1.hits, 1);
+  assert.equal(week1.hitRate, 0.5);
+  // MAE uses every pick with both points published, including the ungraded one.
+  assert.ok(Math.abs((week1.mae ?? 0) - (2 + 8 + 13) / 3) < 1e-9);
+  const season = accuracyFor(fake);
+  assert.equal(season.gradedPicks, 3);
+  assert.equal(season.hits, 2);
+  assert.equal(accuracyByWeek(fake).length, 2);
+
+  const empty = accuracyFor([]);
+  assert.equal(empty.hitRate, null);
+  assert.equal(empty.mae, null);
+  assert.equal(empty.bias, null);
+});
+
 test("dataset records are provenance-tagged and never claim live status", () => {
   assert.ok(games.every((game) => game.provenance.dataEnvironment === "production"));
   assert.ok(games.every((game) => game.provenance.licenseClass === "R2_LINK_ONLY"));

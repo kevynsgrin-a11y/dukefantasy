@@ -13,6 +13,7 @@ const staticRoots = new Set([
   "coaches",
   "coaching-carousel",
   "dfs",
+  "x-and-ys",
   "teams",
   "conferences",
   "stadiums",
@@ -111,9 +112,16 @@ export async function generateMetadata({
   }
   if (root === "dfs") {
     return {
-      title: "NFL Fantasy Notes Board",
+      title: "DFS Projections & Accuracy Ledger",
       description:
-        "Published fantasy roles, usage notes, availability, and analyst ranks with source context.",
+        "Weekly NFL fantasy projections, past-week results, and a verification guide that grades every published top-10 pick — hits, misses, and points error.",
+    };
+  }
+  if (root === "x-and-ys") {
+    return {
+      title: "X & Ys — NFL Offensive Concept Library",
+      description:
+        "Deep breakdowns of NFL pass and run concepts, macro scheme families to micro technique, how 2026 teams execute them, and a weekly film spotlight of the league's best playmakers.",
     };
   }
   if (root === "coaching-carousel" || root === "coaches") {

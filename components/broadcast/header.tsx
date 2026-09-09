@@ -20,6 +20,7 @@ const navigation = [
   { label: "Schedule", href: "/schedule" },
   { label: "Divisions", href: "/conferences" },
   { label: "Watch", href: "/watch" },
+  { label: "X & Ys", href: "/x-and-ys" },
   { label: "Fantasy", href: "/dfs" },
   { label: "More Sports ↗", href: "https://sports-always.com", external: true },
 ];

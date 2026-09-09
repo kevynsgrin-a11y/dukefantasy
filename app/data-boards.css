@@ -1953,3 +1953,356 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* ================================================== X & Ys film room + DFS hub */
+
+.xy-page,
+.dfs-hub-page {
+  padding-bottom: 56px;
+}
+
+.xy-concept-filters {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.xy-concept-filters button {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--muted);
+  cursor: pointer;
+  font: 600 12px/1 var(--body-family);
+  letter-spacing: 0.08em;
+  padding: 8px 14px;
+  text-transform: uppercase;
+  transition: border-color var(--duration-fast) ease, color var(--duration-fast) ease;
+}
+
+.xy-concept-filters button.is-active {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.xy-concept-search {
+  margin: 0;
+  min-width: min(320px, 100%);
+}
+
+.xy-concept-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(auto-fill, minmax(min(340px, 100%), 1fr));
+}
+
+.xy-concept-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  transition: border-color var(--duration-fast) ease;
+}
+
+.xy-concept-card:hover,
+.xy-concept-card--open {
+  border-color: color-mix(in srgb, var(--primary) 45%, var(--border));
+}
+
+.xy-concept-card > header {
+  align-items: flex-start;
+  display: flex;
+  gap: 10px;
+}
+
+.xy-concept-card h3 {
+  font-size: 1.05rem;
+  margin: 0;
+}
+
+.xy-concept-family {
+  color: var(--muted-2);
+  display: block;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  margin-top: 2px;
+  text-transform: uppercase;
+}
+
+.xy-concept-card .db-position-tag[data-side="pass"] {
+  color: var(--blue);
+  border-color: color-mix(in srgb, var(--blue) 40%, transparent);
+}
+
+.xy-concept-card .db-position-tag[data-side="run"] {
+  color: var(--green);
+  border-color: color-mix(in srgb, var(--green) 40%, transparent);
+}
+
+.xy-concept-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.xy-concept-tags span {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  padding: 3px 10px;
+  text-transform: lowercase;
+}
+
+.xy-concept-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.xy-concept-body .db-eyebrow {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.xy-concept-body p {
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.55;
+  margin: 0;
+}
+
+.xy-concept-beats strong {
+  color: var(--primary);
+}
+
+.xy-concept-toggle {
+  align-items: center;
+  align-self: flex-start;
+  background: transparent;
+  border: none;
+  color: var(--primary);
+  cursor: pointer;
+  display: inline-flex;
+  font: 600 12px/1 var(--body-family);
+  gap: 6px;
+  letter-spacing: 0.06em;
+  padding: 4px 0;
+  text-transform: uppercase;
+}
+
+.xy-family-grid,
+.xy-primer-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(auto-fill, minmax(min(380px, 100%), 1fr));
+}
+
+.xy-family-card {
+  background: linear-gradient(180deg, var(--surface-2), var(--surface));
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 18px;
+}
+
+.xy-family-card h3 {
+  font-size: 1.2rem;
+  margin: 6px 0 0;
+}
+
+.xy-family-thesis {
+  color: var(--text);
+  font-size: 0.95rem;
+  line-height: 1.55;
+  margin: 0;
+}
+
+.xy-family-identity {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+}
+
+.xy-family-identity dt {
+  color: var(--muted-2);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  margin-bottom: 2px;
+  text-transform: uppercase;
+}
+
+.xy-family-identity dd {
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.xy-family-teams {
+  border-top: 1px solid var(--border-soft);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-top: 12px;
+}
+
+.xy-family-team {
+  border: 1px solid var(--border);
+  border-left-width: 3px;
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 10px;
+  text-decoration: none;
+}
+
+.xy-family-team:hover {
+  background: var(--surface-3);
+}
+
+.xy-primer-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+}
+
+.xy-primer-card h3 {
+  align-items: center;
+  display: flex;
+  font-size: 0.98rem;
+  gap: 8px;
+  margin: 0;
+}
+
+.xy-primer-card h3 svg {
+  color: var(--primary);
+  flex-shrink: 0;
+}
+
+.xy-primer-card p {
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.55;
+  margin: 0;
+}
+
+.xy-spotlight {
+  scroll-margin-top: 120px;
+}
+
+.xy-spotlight-format {
+  color: var(--muted);
+  line-height: 1.6;
+  margin: 0 0 8px;
+  max-width: 72ch;
+}
+
+.xy-spotlight-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr));
+  margin-top: 14px;
+}
+
+.xy-spotlight-card {
+  align-items: flex-start;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  display: flex;
+  gap: 14px;
+  padding: 16px;
+  text-decoration: none;
+  transition: border-color var(--duration-fast) ease;
+}
+
+.xy-spotlight-card:hover {
+  border-color: color-mix(in srgb, var(--primary) 45%, var(--border));
+}
+
+.xy-spotlight-play {
+  align-items: center;
+  background: color-mix(in srgb, var(--primary) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--primary) 40%, transparent);
+  border-radius: 50%;
+  color: var(--primary);
+  display: inline-flex;
+  flex-shrink: 0;
+  height: 44px;
+  justify-content: center;
+  width: 44px;
+}
+
+.xy-spotlight-card h3 {
+  font-size: 1rem;
+  margin: 4px 0;
+}
+
+.xy-spotlight-card p {
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.5;
+  margin: 4px 0 0;
+}
+
+.xy-spotlight-pending,
+.dfs-empty {
+  align-items: flex-start;
+  background: var(--surface);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  color: var(--muted);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+  max-width: 720px;
+  padding: 22px;
+}
+
+.xy-spotlight-pending h3,
+.dfs-empty h3 {
+  color: var(--text);
+  font-size: 1.05rem;
+  margin: 0;
+}
+
+.xy-spotlight-pending p,
+.dfs-empty p {
+  font-size: 0.9rem;
+  line-height: 1.55;
+  margin: 0;
+}
+
+.xy-spotlight-pending .empty-state__icon,
+.dfs-empty .empty-state__icon {
+  color: var(--primary);
+}
+
+.dfs-method-grid {
+  grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr));
+}
+
+@media (max-width: 679px) {
+  .xy-concept-search {
+    min-width: 100%;
+  }
+
+  .xy-concept-filters {
+    width: 100%;
+  }
+}

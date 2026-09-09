@@ -14,6 +14,7 @@ const required = [
   "/schedule",
   "/transfer-portal",
   "/conferences",
+  "/x-and-ys",
   "/search",
   "/dfs",
   "/watch",
