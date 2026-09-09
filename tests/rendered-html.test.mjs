@@ -1,0 +1,132 @@
+import assert from "node:assert/strict";
+import test from "node:test";
+
+const workerUrl = new URL("../dist/server/index.js", import.meta.url);
+workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}`);
+const { default: worker } = await import(workerUrl.href);
+
+async function fetchRoute(path, init) {
+  return worker.fetch(
+    new Request(`http://localhost${path}`, {
+      headers: { accept: "text/html", ...(init?.headers ?? {}) },
+      ...init,
+    }),
+    {
+      ASSETS: { fetch: async () => new Response("Not found", { status: 404 }) },
+    },
+    {
+      waitUntil() {},
+      passThroughOnException() {},
+    },
+  );
+}
+
+test("server-renders the finished home utility", async () => {
+  const response = await fetchRoute("/");
+  assert.equal(response.status, 200);
+  assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
+  assert.match(response.headers.get("x-robots-tag") ?? "", /noindex/i);
+  assert.match(response.headers.get("content-security-policy") ?? "", /frame-ancestors 'none'/);
+
+  const html = await response.text();
+  assert.match(html, /Every Sunday/);
+  assert.match(html, /GAME OF THE WEEK|MARQUEE MATCHUP/);
+  assert.match(html, /32/);
+  assert.match(html, /NFL teams/);
+  assert.match(html, /Clean Mode/);
+  assert.doesNotMatch(html, /codex-preview|react-loading-skeleton|Your site is taking shape/i);
+});
+
+test("www canonicalizes to the apex domain without losing the request target", async () => {
+  const response = await worker.fetch(
+    new Request("https://www.dukefantasy.com/scores?week=1"),
+    { ASSETS: { fetch: async () => new Response("Not found", { status: 404 }) } },
+    { waitUntil() {}, passThroughOnException() {} },
+  );
+
+  assert.equal(response.status, 308);
+  assert.equal(response.headers.get("location"), "https://dukefantasy.com/scores?week=1");
+  assert.match(response.headers.get("strict-transport-security") ?? "", /includeSubDomains/);
+});
+
+test("critical product routes render dataset-backed content", async () => {
+  const routes = [
+    ["/scores", /The slate, without the scavenger hunt/],
+    ["/scores", /Select scoreboard week/],
+    ["/teams", /All 32 NFL teams/],
+    ["/teams/kansas-city-chiefs", /Kansas City/],
+    ["/teams/kansas-city-chiefs", /Chiefs/],
+    ["/teams/kansas-city-chiefs", /\/logos\/kansas-city-chiefs\.png/],
+    ["/conferences", /AFC|NFC/],
+    ["/conferences/afc-east", /AFC East/],
+    ["/conferences/nfc-west", /49ers|NFC West/],
+    ["/schedule", /Week|NFL/i],
+    ["/games/401872657", /Netflix/],
+    ["/games/401872657", /49ers|Rams/],
+    ["/dfs", /Fantasy context, when you ask for it/],
+    ["/watch", /DUKE FANTASY BROADCAST DESK/],
+    ["/watch", /televised games/],
+    ["/search", /Try Chiefs, Mahomes/],
+    ["/", /hello@dukefantasy\.com/],
+    ["/", /privacy@dukefantasy\.com/],
+    ["/privacy", /privacy@dukefantasy\.com/],
+    ["/media-kit", /media@dukefantasy\.com/],
+    ["/corrections", /admin@dukefantasy\.com/],
+    ["/about", /socials@dukefantasy\.com/],
+  ];
+
+  for (const [path, pattern] of routes) {
+    const response = await fetchRoute(path);
+    assert.equal(response.status, 200, path);
+    assert.match(await response.text(), pattern, path);
+  }
+});
+
+test("spoofed admin-identity headers never reach the app (NF-1)", async () => {
+  const response = await fetchRoute("/admin", {
+    headers: { "oai-authenticated-user-email": "operator@dukefantasy.com" },
+  });
+  assert.equal(response.status, 200);
+  const html = await response.text();
+  // The console must render its unauthenticated state — a spoofed identity
+  // header can never authorize it.
+  assert.ok(!/operator@dukefantasy\.com/.test(html), "spoofed email leaked into the admin page");
+});
+
+test("health and readiness endpoints disclose dataset state", async () => {
+  const health = await fetchRoute("/api/health", { headers: { accept: "application/json" } });
+  assert.equal(health.status, 200);
+  assert.equal((await health.json()).dataEnvironment, "dataset");
+
+  const readiness = await fetchRoute("/api/readiness", { headers: { accept: "application/json" } });
+  const data = await readiness.json();
+  assert.equal(data.readyForPreview, true);
+  assert.equal(data.readyForProductionLiveData, false);
+  assert.match(readiness.headers.get("cache-control") ?? "", /no-store/i);
+  assert.ok(data.productionGates.length >= 10);
+  assert.ok(data.productionGates.some((gate) => gate.id === "LIVE_MODE" && gate.status === "blocked"));
+});
+
+test("simulation API rejects invalid scenario participants and caps work", async () => {
+  const board = await fetchRoute("/api/simulate", {
+    method: "POST",
+    headers: { accept: "application/json", "content-type": "application/json" },
+    body: JSON.stringify({ iterations: 100_000 }),
+  });
+  assert.equal(board.status, 200);
+  assert.equal((await board.json()).iterations, 20_000);
+
+  const invalid = await fetchRoute("/api/simulate", {
+    method: "POST",
+    headers: { accept: "application/json", "content-type": "application/json" },
+    body: JSON.stringify({ forced: { "scenario-1": "team-16" }, iterations: 100_000 }),
+  });
+  assert.equal(invalid.status, 400);
+
+  const unknownTeam = await fetchRoute("/api/simulate", {
+    method: "POST",
+    headers: { accept: "application/json", "content-type": "application/json" },
+    body: JSON.stringify({ forced: { "scenario-1": "clemson" }, iterations: 100_000 }),
+  });
+  assert.equal(unknownTeam.status, 400);
+});

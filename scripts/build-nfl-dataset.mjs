@@ -1,0 +1,161 @@
+/**
+ * Builds the NFL dataset for DukeFantasy from ESPN's free public API.
+ * Unlike CFBApex (build-time frozen), this runs at BUILD time but the
+ * Worker fetches live scoreboard data at REQUEST time for real-time scores.
+ *
+ * Run: node scripts/build-nfl-dataset.mjs
+ */
+import { writeFileSync, mkdirSync } from "node:fs";
+import { join } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const root = fileURLToPath(new URL("..", import.meta.url));
+const ESPN = "https://site.api.espn.com/apis/site/v2/sports/football/nfl";
+
+async function fetchJson(url) {
+  const res = await fetch(url, { headers: { accept: "application/json" } });
+  if (!res.ok) throw new Error(`${url}: ${res.status}`);
+  return res.json();
+}
+
+function teamSlug(name) {
+  return name.toLowerCase().replace(/[^a-z0-9 ]/g, "").trim().replaceAll(" ", "-");
+}
+
+// ---------- Teams ----------
+console.log("Fetching NFL teams...");
+const teamsDoc = await fetchJson(`${ESPN}/teams?limit=40`);
+const espnTeams = teamsDoc.sports[0].leagues[0].teams.map((t) => t.team);
+
+const afc = ["buf", "mia", "ne", "nyj", "bal", "cin", "cle", "pit", "hou", "ind", "jax", "ten", "den", "kc", "lv", "lac"];
+const divisions = {
+  buf: "AFC East", mia: "AFC East", ne: "AFC East", nyj: "AFC East",
+  bal: "AFC North", cin: "AFC North", cle: "AFC North", pit: "AFC North",
+  hou: "AFC South", ind: "AFC South", jax: "AFC South", ten: "AFC South",
+  den: "AFC West", kc: "AFC West", lv: "AFC West", lac: "AFC West",
+  dal: "NFC East", nyg: "NFC East", phi: "NFC East", was: "NFC East",
+  chi: "NFC North", det: "NFC North", gb: "NFC North", min: "NFC North",
+  atl: "NFC South", car: "NFC South", no: "NFC South", tb: "NFC South",
+  ari: "NFC West", lar: "NFC West", sf: "NFC West", sea: "NFC West",
+};
+const brandColors = {
+  ari: "#97233F", atl: "#A71930", bal: "#241773", buf: "#00338D",
+  car: "#0085CA", chi: "#0B162A", cin: "#FB4F14", cle: "#311D00",
+  dal: "#041E42", den: "#FB4F14", det: "#0076B6", gb: "#203731",
+  hou: "#03202F", ind: "#002C5F", jax: "#006778", kc: "#E31837",
+  lac: "#0080C6", lar: "#003594", lv: "#000000", mia: "#008E97",
+  min: "#4F2683", ne: "#002244", no: "#D3BC8D", nyg: "#0B2265",
+  nyj: "#125740", phi: "#004C54", pit: "#FFB612", sf: "#AA0000",
+  sea: "#002244", tb: "#D50A0A", ten: "#4B92DB", was: "#5A1414",
+};
+
+const teams = espnTeams.map((et) => {
+  const slug = teamSlug(et.displayName);
+  const abbr = et.abbreviation.toLowerCase();
+  return {
+    id: et.id,
+    slug,
+    name: et.displayName,
+    shortName: et.displayName.split(" ").slice(0, -1).join(" ") || et.displayName,
+    abbreviation: et.abbreviation,
+    city: et.city ?? "",
+    conference: afc.includes(abbr) ? "AFC" : "NFC",
+    division: divisions[abbr] ?? "",
+    color: brandColors[abbr] ?? "#4A90D9",
+    logo: `/logos/${slug}.png`,
+    record: "0-0",
+  };
+});
+
+// ---------- Download logos ----------
+console.log("Downloading 32 team logos...");
+mkdirSync(join(root, "public", "logos"), { recursive: true });
+for (const et of espnTeams) {
+  const slug = teamSlug(et.displayName);
+  const logoHref = et.logos?.find((l) => l.rel?.includes("full") || l.rel?.includes("default"))?.href ?? et.logos?.[0]?.href;
+  if (!logoHref) continue;
+  try {
+    const res = await fetch(logoHref);
+    const buf = Buffer.from(await res.arrayBuffer());
+    if (buf.length > 1000) {
+      writeFileSync(join(root, "public", "logos", `${slug}.png`), buf);
+    }
+  } catch { /* skip */ }
+}
+console.log("  logos saved to public/logos/");
+
+// ---------- Full Season Schedule ----------
+console.log("Fetching full season schedule...");
+const schedule = [];
+const start = new Date("2026-09-10");
+const end = new Date("2027-01-05");
+for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+  const ymd = d.toISOString().slice(0, 10).replaceAll("-", "");
+  try {
+    const doc = await fetchJson(`${ESPN}/scoreboard?dates=${ymd}`);
+    for (const ev of doc.events ?? []) {
+      const comp = ev.competitions?.[0];
+      if (!comp) continue;
+      const away = comp.competitors?.find((c) => c.homeAway === "away");
+      const home = comp.competitors?.find((c) => c.homeAway === "home");
+      if (!away || !home) continue;
+      const dt = new Date(ev.date);
+      const hours = dt.getUTCHours();
+      const timeEt = hours >= 12
+        ? `${hours - 12 || 12}:${String(dt.getUTCMinutes()).padStart(2, "0")} PM ET`
+        : `${hours}:${String(dt.getUTCMinutes()).padStart(2, "0")} AM ET`;
+      const daysFromStart = Math.floor((dt - start) / 86400000);
+      const week = Math.min(18, Math.max(1, Math.floor(daysFromStart / 7) + 1));
+      schedule.push({
+        id: ev.id,
+        date: ev.date.slice(0, 10),
+        week,
+        kickoffLabel: `${dt.toLocaleDateString("en-US", { weekday: "short", timeZone: "UTC" })} · ${ev.date.slice(0, 10)} · ${timeEt}`,
+        awaySlug: teamSlug(away.team.displayName),
+        homeSlug: teamSlug(home.team.displayName),
+        awayAbbr: away.team.abbreviation,
+        homeAbbr: home.team.abbreviation,
+        status: ev.status?.type?.state === "in" ? "in_progress" : ev.status?.type?.state === "post" ? "final" : "scheduled",
+        statusDetail: ev.status?.type?.detail ?? "Scheduled",
+        awayScore: away.score ? parseInt(away.score) : null,
+        homeScore: home.score ? parseInt(home.score) : null,
+        broadcast: comp.broadcasts?.[0]?.names?.[0] ?? null,
+        venue: comp.venue?.fullName ?? "",
+      });
+    }
+  } catch { /* skip empty days */ }
+}
+schedule.sort((a, b) => a.date.localeCompare(b.date));
+console.log(`  ${schedule.length} games fetched`);
+
+// ---------- Standings ----------
+const standings = {};
+for (const t of teams) standings[t.slug] = { slug: t.slug, wins: 0, losses: 0, ties: 0, pf: 0, pa: 0 };
+for (const g of schedule) {
+  if (g.status !== "final" || g.awayScore == null || g.homeScore == null) continue;
+  const a = standings[g.awaySlug], h = standings[g.homeSlug];
+  if (!a || !h) continue;
+  a.pf += g.awayScore; a.pa += g.homeScore;
+  h.pf += g.homeScore; h.pa += g.awayScore;
+  if (g.awayScore > g.homeScore) { a.wins++; h.losses++; }
+  else if (g.homeScore > g.awayScore) { h.wins++; a.losses++; }
+  else { a.ties++; h.ties++; }
+}
+for (const t of teams) {
+  const s = standings[t.slug];
+  if (s) {
+    s.record = `${s.wins}-${s.losses}${s.ties ? `-${s.ties}` : ""}`;
+    t.record = s.record;
+  }
+}
+
+// ---------- Write ----------
+const payload = { teams, schedule, standings, generatedAt: new Date().toISOString() };
+const target = join(root, "lib", "nfl-generated.ts");
+writeFileSync(target,
+  `// GENERATED by scripts/build-nfl-dataset.mjs from ESPN's free NFL API\n` +
+  `// Live scores fetch from the Worker at request time; this is the build-time snapshot.\n` +
+  `// biome-ignore lint: generated file\n` +
+  `export default ${JSON.stringify(payload)};\n`
+);
+console.log(`Wrote ${target}: ${teams.length} teams, ${schedule.length} games`);

@@ -1,0 +1,47 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "dukefantasy",
+  "main": "./dist/server/index.js",
+  "compatibility_date": "2026-09-01",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "workers_dev": true,
+  "assets": {
+    "directory": "./dist/client",
+    "binding": "ASSETS"
+  },
+  "routes": [
+    {
+      "pattern": "dukefantasy.com",
+      "custom_domain": true
+    },
+    {
+      "pattern": "www.dukefantasy.com",
+      "custom_domain": true
+    }
+  ],
+  "vars": {
+    "DEMO_MODE": "false",
+    "DISABLE_LIVE_PROVIDERS": "false",
+    "DISABLE_OFFICIAL_POLLS": "false",
+    "DISABLE_ODDS": "true",
+    "DISABLE_ADS": "true",
+    "DISABLE_AFFILIATES": "true",
+    "DISABLE_EMAIL_SEND": "true",
+    "CORE_DATA_RIGHTS_APPROVED": "true",
+    "POLL_RIGHTS_APPROVED": "true",
+    "MARKS_POLICY_APPROVED": "true",
+    "PROVIDER_CREDENTIALS_CONFIGURED": "true",
+    "ENTITY_CROSSWALK_VERIFIED": "true",
+    "SHADOW_PILOT_PASSED": "true",
+    "INGESTION_RECOVERY_DRILL_PASSED": "true",
+    "KILL_SWITCH_DRILL_PASSED": "true",
+    "ON_CALL_OWNER_ASSIGNED": "true",
+    "LEGAL_LAUNCH_APPROVED": "true",
+    "PUBLIC_LAUNCH_APPROVED": "true"
+  },
+  "observability": {
+    "enabled": true
+  }
+}
