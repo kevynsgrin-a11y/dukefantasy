@@ -77,6 +77,8 @@ test("critical product routes render dataset-backed content", async () => {
     ["/api/injuries", /"source": ?"ESPN NFL injuries feed"/],
     ["/watch", /DUKE FANTASY BROADCAST DESK/],
     ["/watch", /televised games/],
+    ["/watch", /TicketNetwork/],
+    ["/watch", /TicketSmarter/],
     ["/search", /Try Chiefs, Mahomes/],
     ["/", /hello@dukefantasy\.com/],
     ["/", /privacy@dukefantasy\.com/],

@@ -81,13 +81,16 @@ test("TV rows mirror the schedule with ET times", () => {
 });
 
 test("affiliate seams stay fail-closed until configured", async () => {
-  const { ticketLinksForTeam, ticketAffiliatesConfigured } = await import("../lib/affiliates.ts");
-  if (!ticketAffiliatesConfigured) {
-    assert.deepEqual(ticketLinksForTeam("Kansas City Chiefs"), []);
-  } else {
-    for (const link of ticketLinksForTeam("Kansas City Chiefs")) {
-      assert.match(link.url, /^https:\/\//);
-      assert.ok(link.url.includes("url="), "affiliate wrapper must encode the destination");
+  const { ticketLinksForTeam, ticketAffiliatesConfigured, ticketPartners } = await import("../lib/affiliates.ts");
+  // LINK-FIRST: every partner always yields a working https link.
+  const links = ticketLinksForTeam("Kansas City Chiefs");
+  assert.equal(links.length, ticketPartners.length);
+  for (const link of links) {
+    assert.match(link.url, /^https:\/\//, link.partner);
+    if (ticketAffiliatesConfigured && link.tracked) {
+      assert.ok(link.url.includes("url="), "wrapper must encode the destination");
+    } else {
+      assert.equal(link.tracked, false, `${link.partner}: untracked must be direct`);
     }
   }
 });
