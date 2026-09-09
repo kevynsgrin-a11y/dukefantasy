@@ -9,14 +9,15 @@
  * the affiliate click URL is issued, filling `trackedUrl` flips every link
  * on every surface to the tracked wrapper with zero component changes.
  *
- * To activate a partner once approved:
- *   1. Fill `trackedUrl` with the network click link, e.g.
- *      "https://<impact-or-cj-host>/click-<ids>?url={url}"
- *      ({url} is replaced with the percent-encoded destination).
- *   2. Verify the destination template resolves to that partner's live
- *      search results.
- *   3. Rendered links carry rel="sponsored nofollow" and sit beside the
- *      /affiliate-disclosure page, which describes the pending state.
+ * To activate a partner once approved (Impact login -> Campaigns -> the
+ * partner -> "Ads & Links" -> copy any link or ad tag), run:
+ *   node scripts/activate-affiliate.mjs ticketnetwork "<pasted link>"
+ * It validates the tracking URL, normalizes it into the {url} template
+ * below, and rewrites trackedUrl in place — then verify the redirect and
+ * deploy. Manual route: set trackedUrl to the network click link, e.g.
+ * "https://<impact-host>/c/<campaignId>?url={url}" ({url} is replaced with
+ * the percent-encoded destination). Rendered links carry rel="sponsored
+ * nofollow" and sit beside the /affiliate-disclosure page.
  */
 
 export interface TicketPartnerConfig {
