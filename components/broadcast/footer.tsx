@@ -9,6 +9,7 @@ const columns = [
       ["All teams", "/teams"],
       ["Divisions", "/conferences"],
       ["X & Ys film room", "/x-and-ys"],
+      ["Injury report", "/injuries"],
       ["Fantasy notes", "/dfs"],
       ["Newsletter", "/newsletter"],
     ],

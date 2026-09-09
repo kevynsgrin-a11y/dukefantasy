@@ -209,6 +209,34 @@ test("DFS ledger grades only published top-10 picks and reports honest accuracy"
   assert.equal(empty.bias, null);
 });
 
+test("injury desk: ESPN base loads, long-term rule holds, cadence always has a next slot", async () => {
+  const injury = await import("../lib/injury-report.ts");
+  assert.ok(injury.espnInjuries.length >= 200, `expected a loaded ESPN injury base, got ${injury.espnInjuries.length}`);
+  const slugs = new Set(teams.map((team) => team.slug));
+  for (const entry of injury.espnInjuries.slice(0, 50)) {
+    assert.ok(entry.teamSlug === null || slugs.has(entry.teamSlug), `unknown team ${entry.teamSlug}`);
+  }
+  // Long-term rule: IR always qualifies; OUT needs 3+ weeks; 2 weeks never does.
+  assert.ok(injury.isLongTerm({ status: "IR", weeksOut: null }));
+  assert.ok(injury.isLongTerm({ status: "OUT", weeksOut: 3 }));
+  assert.ok(!injury.isLongTerm({ status: "OUT", weeksOut: 2 }));
+  assert.ok(!injury.isLongTerm({ status: "QUESTIONABLE", weeksOut: null }));
+  // Practice-status likelihood model is deterministic and explainable.
+  assert.equal(injury.likelihoodFromPractice({ wed: null, thu: "FP", fri: "FP", sat: null }).likelihood, "likely");
+  assert.equal(injury.likelihoodFromPractice({ wed: null, thu: null, fri: "DNP", sat: null }).likelihood, "doubtful");
+  assert.equal(injury.likelihoodFromPractice({ wed: null, thu: null, fri: null, sat: null }).likelihood, null);
+  // Cadence: every slot exists and the next slot is always in the future.
+  assert.equal(injury.INJURY_CADENCE.length, 4);
+  const next = injury.nextInjurySlot();
+  assert.ok(next.at.getTime() > Date.now());
+  const wednesday = new Date("2026-09-09T18:00:00Z"); // 11 AM PT Wednesday
+  const afterWed = injury.nextInjurySlot(wednesday);
+  assert.ok(afterWed.at.getTime() > wednesday.getTime());
+  // Editorial layer ships empty until research lands (fail-closed).
+  assert.equal(injury.injuryResearch.ledger.length, 0);
+  assert.equal(injury.injuryResearch.watch.length, 0);
+});
+
 test("dataset records are provenance-tagged and never claim live status", () => {
   assert.ok(games.every((game) => game.provenance.dataEnvironment === "production"));
   assert.ok(games.every((game) => game.provenance.licenseClass === "R2_LINK_ONLY"));

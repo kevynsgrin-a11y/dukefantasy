@@ -14,6 +14,7 @@ const staticRoots = new Set([
   "coaching-carousel",
   "dfs",
   "x-and-ys",
+  "injuries",
   "teams",
   "conferences",
   "stadiums",
@@ -115,6 +116,13 @@ export async function generateMetadata({
       title: "DFS Projections & Accuracy Ledger",
       description:
         "Weekly NFL fantasy projections, past-week results, and a verification guide that grades every published top-10 pick — hits, misses, and points error.",
+    };
+  }
+  if (root === "injuries") {
+    return {
+      title: "NFL Injury Report — Long-Term Ledger & Week-to-Week Watch",
+      description:
+        "Every NFL player on IR or out more than two weeks, plus a week-to-week watch with verified practice status and sourced likelihood to play. Updates Sunday mornings, midday, and before Monday night football.",
     };
   }
   if (root === "x-and-ys") {

@@ -15,6 +15,7 @@ const required = [
   "/transfer-portal",
   "/conferences",
   "/x-and-ys",
+  "/injuries",
   "/search",
   "/dfs",
   "/watch",

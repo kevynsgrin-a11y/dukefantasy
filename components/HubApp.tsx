@@ -54,6 +54,7 @@ import { ScoreTicker } from "./broadcast/score-ticker";
 import { WatchPage } from "./broadcast/watch-page";
 import { CoachingLedger } from "./coaching-ledger";
 import { DfsHubPage } from "./dfs-hub";
+import { InjuryReportPage } from "./injury-report-page";
 import { XAndYsPage } from "./x-and-ys";
 import { TeamHub } from "./team-hub/team-hub";
 import { TransferPortalBoard } from "./transfer-portal-board";
@@ -1559,6 +1560,7 @@ export function HubApp({ path = "/" }: { path?: string }) {
     );
   }
   else if (root === "x-and-ys") content = <XAndYsPage teams={teams} />;
+  else if (root === "injuries") content = <InjuryReportPage teams={teams} />;
   else if (root === "teams") content = <TeamsPage teamSlug={parts[1]} />;
   else if (root === "players" && parts[1]) {
     content = (
