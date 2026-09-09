@@ -68,7 +68,7 @@ export function ScoreTicker({
         <div className="apex-ticker-label">
           <span className="apex-eyebrow">ON THE BOARD</span>
           <a href="/scores" className="font-display">
-            FBS SCORES
+            NFL SCORES
             <ChevronRight size={16} aria-hidden="true" />
           </a>
           <div>

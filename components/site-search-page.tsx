@@ -190,7 +190,7 @@ export function SiteSearchPage({ teams, coaches, searchPlayers }: SiteSearchPage
         <div className="lt-hero__copy">
           <span className="lt-eyebrow">SEARCH DUKE FANTASY</span>
           <h1 className="font-display text-balance">Find the next useful answer.</h1>
-          <p>Search every FBS program, head coach, and rostered player in the verified 2026 dataset.</p>
+          <p>Search all 32 NFL teams in the verified 2026 dataset.</p>
         </div>
       </header>
 

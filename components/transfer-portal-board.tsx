@@ -277,7 +277,7 @@ export function TransferPortalBoard({
       <DataBoardHero
         eyebrow="Data board · Roster volatility"
         title="The transfer wire, verified."
-        description="Track every sourced FBS move by player, position, program, date, status, and confidence—without NIL speculation or inferred destinations."
+        description="Track every sourced move by player, position, team, date, status, and confidence—without speculation or inferred destinations."
         action={
           <a className="db-hero-link" href="/methodology#portal">
             Portal methodology

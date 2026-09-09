@@ -90,7 +90,7 @@ export function StadiumDirectory({ stadiums, teams }: StadiumDirectoryProps) {
           <span className="lt-eyebrow">GAMEDAY FIELD NOTES</span>
           <h1 className="font-display text-balance">Know the venue before kickoff.</h1>
           <p className="text-pretty">
-            Parking, transit, bag policy, tailgating, visitor seating, and accessibility guidance for every FBS home field.
+            Parking, transit, bag policy, tailgating, visitor seating, and accessibility guidance for every NFL home field.
           </p>
         </div>
         <div className="lt-hero__count" role="status" aria-label={`${stadiums.length} verified venue guides`}>

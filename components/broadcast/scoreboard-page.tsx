@@ -111,7 +111,7 @@ export function ScoreboardPage({
   );
   const [filter, setFilter] = useState<ScoreboardFilter>("all");
   const [conference, setConference] = useState(
-    () => conferences[0] ?? "FBS Independents",
+    () => conferences[0] ?? "All teams",
   );
   const [filterOpen, setFilterOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
