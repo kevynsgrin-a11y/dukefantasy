@@ -63,7 +63,7 @@ export const travelPartners: TravelPartnerConfig[] = [
     network: "Travelpayouts",
     commissionNote: "3% of ticket price (~$13.50 avg)",
     destTemplate: "https://www.kiwi.com/en/",
-    trackedUrl: "https://tp.media/r?campaign_id=111&marker=775855&p=4136&trs=572310&u={url}",
+    trackedUrl: "https://tp.media/r?campaign_id=111&marker=775855&p=4136&trs=572322&u={url}",
   },
   {
     id: "wayaway",
@@ -100,7 +100,7 @@ export const travelPartners: TravelPartnerConfig[] = [
     network: "In-house / CJ",
     commissionNote: "3-8% of booking value",
     destTemplate: "https://www.economybookings.com/",
-    trackedUrl: "https://tp.media/r?campaign_id=10&marker=775855&p=2018&trs=572310&u={url}",
+    trackedUrl: "https://tp.media/r?campaign_id=10&marker=775855&p=2018&trs=572322&u={url}",
   },
   {
     id: "qeeq",
@@ -109,7 +109,7 @@ export const travelPartners: TravelPartnerConfig[] = [
     network: "Travelpayouts",
     commissionNote: "5-8% of gross order value",
     destTemplate: "https://www.qeeq.com/",
-    trackedUrl: "https://tp.media/r?campaign_id=172&marker=775855&p=4845&trs=572310&u={url}",
+    trackedUrl: "https://tp.media/r?campaign_id=172&marker=775855&p=4845&trs=572322&u={url}",
   },
 ];
 
