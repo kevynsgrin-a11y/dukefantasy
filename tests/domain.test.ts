@@ -74,9 +74,22 @@ test("CFB-only surfaces stay empty and honest in the NFL build", () => {
   assert.equal(coaches.length, 0);
   assert.equal(portalEvents.length, 0);
   assert.equal(fantasyNotes.length, 0);
-  assert.equal(stadiums.length, 0);
   assert.equal(Object.keys(preseasonRatings).length, 0);
   assert.equal(scenarioGames.length, 0);
+});
+
+test("NFL stadiums come from ESPN venue facts with honest editorial gaps", () => {
+  assert.equal(stadiums.length, teams.length, "one venue per team");
+  for (const stadium of stadiums) {
+    assert.ok(stadium.name, `${stadium.teamId}: venue name required`);
+    assert.ok(stadium.city, `${stadium.teamId}: venue city required`);
+    assert.equal(stadium.provenance.provider, "ESPN NFL API");
+    assert.equal(stadium.provenance.licenseClass, "R3_CITED_FACTS");
+    // Gameday-visit details are unresearched: must stay empty, never invented.
+    assert.equal(stadium.parking, "");
+    assert.equal(stadium.transit, "");
+    assert.equal(stadium.clearBag, "");
+  }
 });
 
 test("every team carries a logo file and a brand color", () => {
