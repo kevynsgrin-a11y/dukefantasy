@@ -18,6 +18,10 @@ noted). One prompt per block — the START/END markers bound each insertion.
 | 8 | X & Ys Scheme-Family Verification | one-time audit of /x-and-ys macro mapping | Once, then mid-season | Open — editorial mapping needs a fact-check |
 | 9 | NFL Rosters + Depth Charts | team hub roster sections, player pages, search | Once + weekly deltas (Wed) | Open — team pages show "not published" |
 | 10 | NFL Transactions Wire | /transfer-portal transaction board | Weekly (Wed) | Open — board is empty |
+| 11 | Waiver Wire Watch | /fantasy-desk waiver section | Weekly (Tue after MNF; first edition Sep 15 for Week 2) | Open — new 2026-09-11 |
+| 12 | Start/Sit Tier Board | /fantasy-desk start-sit section | Weekly (Thu; first edition before Week 1 Sunday) | Open — new 2026-09-11 |
+| 13 | Rookie Usage Report | /fantasy-desk rookie section | Weekly (Tue; first data after Week 1) | Open — new 2026-09-11 |
+| 14 | Trade Value Big Board | /fantasy-desk trade section | Weekly (Wed; meaningful from Week 2) | Open — new 2026-09-11 |
 
 ---
 
@@ -359,6 +363,119 @@ null, "to_team_slug": "", "position": "", "transaction_type": "", "date":
 ```
 
 ---
+
+## PROMPT 11 — Waiver Wire Watch (run Tuesdays after MNF; first edition Tuesday Sep 15)
+
+```
+==================== PROMPT START ====================
+Compile the DukeFantasy Waiver Wire Watch for Week [N+1] of the 2026 NFL
+season, covering the games of [WEEK N DATES]. Target audience: redraft and
+half-PPR leagues (note PPR differences where material). Only include players
+rostered in fewer than 55% of ESPN leagues (verify ownership on ESPN or
+FantasyPros; if a number is unavailable, set it to null — never estimate).
+
+Deliver, per position (QB, RB, WR, TE, DST, K): the top adds — 3 QB, 6 RB,
+6 WR, 3 TE, 2 DST, 2 K. For each: name, team, position, ESPN ownership %,
+one-line why (usage change, injury replacement, role change, matchup),
+confidence (high/medium/low), and whether they are a one-week stream or a
+rest-of-season hold. Also: 5 drop candidates (rostered >60%, losing role)
+and one priority-spend note (when to burn the top claim vs. FAAB guidance).
+
+Rules: base every claim on Week [N] usage or verified role news — no
+preseason narratives. Two sources per player minimum; list them. Null means
+not published; never invent a number.
+
+OUTPUT: one JSON code block, nothing else:
+{"as_of": "YYYY-MM-DD", "week_adding_for": N, "adds": [{"player": "",
+"team_slug": "", "position": "", "ownership_pct": null, "why": "",
+"hold": "stream|rest_of_season", "confidence": "", "sources": [""]}],
+"drops": [{"player": "", "team_slug": "", "why": "", "sources": [""]}],
+"priority_note": ""}
+==================== PROMPT END ====================
+```
+
+## PROMPT 12 — Start/Sit Tier Board (run Thursdays; first edition before the Week 1 Sunday slate)
+
+```
+==================== PROMPT START ====================
+Compile the DukeFantasy Start/Sit Tier Board for Week [N] of the 2026 NFL
+season as of [THURSDAY DATE]. Tiers, not rankings: within a tier the call is
+a coin flip, so readers sit the tier above the fringe. One line per player,
+decision-first.
+
+Deliver per position (QB, RB, WR, TE, flex, DST): Tier "Start with
+confidence", Tier "Start if you need it", Tier "Fringe — size of the
+target", Tier "Sit". Cover the fantasy-relevant names (top ~12 QB, ~30 RB,
+~40 WR, ~15 TE, ~10 DST) plus 5 explicit "tough call" callouts — the
+players most rostered in the flex range — each with a one-sentence verdict
+that names the reason (matchup, usage risk, weather if verified).
+
+Rules: no numbers you cannot source (projections stay on the DFS board —
+this is decisions, not projections). Weather only if a verified forecast
+exists; otherwise omit. Null means not published.
+
+OUTPUT: one JSON code block, nothing else:
+{"as_of": "YYYY-MM-DD", "week": N, "positions": [{"position": "QB",
+"tiers": [{"tier": "start_confidence|start_if_needed|fringe|sit",
+"players": [{"player": "", "team_slug": "", "note": ""}]}]}],
+"tough_calls": [{"player": "", "team_slug": "", "verdict": ""}]}
+==================== PROMPT END ====================
+```
+
+## PROMPT 13 — Rookie Usage Report (run Tuesdays; first data after Week 1 completes)
+
+```
+==================== PROMPT START ====================
+Compile the DukeFantasy Rookie Usage Report for Week [N] of the 2026 NFL
+season (games of [WEEK N DATES]). Scope: every skill-position rookie (QB/RB/
+WR/TE) drafted in the 2026 class who logged an offensive snap in Week [N],
+plus any notable UDFA with 10+ snaps.
+
+For each: name, team, position, draft round, snap share % (offensive snaps
+/ team offensive snaps), targets or carries, usage trend vs. prior week
+(rising/steady/fading) with a one-line why, and a fantasy meaning (waiver
+relevant / bench stash / dynasty only). Verify snap counts against the box
+score (ESPN/NFL.com Next Gen or similar); if snap share cannot be computed,
+publish snaps and team snaps separately and null the share.
+
+Rules: usage only — no projections. Two sources per player. Null means not
+published; never estimate.
+
+OUTPUT: one JSON code block, nothing else:
+{"as_of": "YYYY-MM-DD", "week": N, "rookies": [{"player": "", "team_slug":
+"", "position": "", "draft_round": null, "snaps": null, "team_snaps": null,
+"snap_share_pct": null, "targets_or_carries": null, "trend":
+"rising|steady|fading", "why": "", "fantasy_meaning":
+"waiver_relevant|bench_stash|dynasty_only", "sources": [""]}]}
+==================== PROMPT END ====================
+```
+
+## PROMPT 14 — Trade Value Big Board (run Wednesdays; meaningful from Week 2)
+
+```
+==================== PROMPT START ====================
+Compile the DukeFantasy Trade Value Big Board for Week [N] of the 2026 NFL
+season as of [WEDNESDAY DATE]. Rest-of-season trade values, redraft
+half-PPR context (note superflex QB inflation separately if material).
+
+Deliver one ordered board per position group (QB, RB, WR, TE) covering the
+fantasy-relevant names, each with: value tier (1-5), one-line basis
+(usage, role, injury risk, schedule), and a market tag — buy-low,
+sell-high, or fair. Then 5 swing trades: the concrete player-for-player
+deals worth making this week, each with the rationale for both sides.
+
+Rules: values must be internally consistent (a tier-2 RB never ranks below
+a tier-3 RB) and grounded in verified season usage — Week [N] overreactions
+are the market to exploit, not the analysis. Two sources where a claim of
+fact appears. Null means not published.
+
+OUTPUT: one JSON code block, nothing else:
+{"as_of": "YYYY-MM-DD", "week": N, "boards": [{"position": "QB", "rows":
+[{"player": "", "team_slug": "", "tier": 1, "basis": "", "market":
+"buy_low|sell_high|fair"}]}], "swing_trades": [{"give": "", "get": "",
+"rationale": ""}]}
+==================== PROMPT END ====================
+```
 
 ## After results arrive
 
