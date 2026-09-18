@@ -251,7 +251,11 @@ test("DFS ledger grades only published top-10 picks and reports honest accuracy"
 
 test("injury desk: ESPN base loads, long-term rule holds, cadence always has a next slot", async () => {
   const injury = await import("../lib/injury-report.ts");
-  assert.ok(injury.espnInjuries.length >= 200, `expected a loaded ESPN injury base, got ${injury.espnInjuries.length}`);
+  /* The floor proves the feed LOADED — not its size. The NFL injury report
+     fluctuates through the week (draft-week peak was 200+; midweek after
+     Week 1 legitimately sat at 172 as players returned). A broken fetch ships
+     0; anything past a modest floor is a healthy feed. */
+  assert.ok(injury.espnInjuries.length >= 100, `expected a loaded ESPN injury base, got ${injury.espnInjuries.length}`);
   const slugs = new Set(teams.map((team) => team.slug));
   for (const entry of injury.espnInjuries.slice(0, 50)) {
     assert.ok(entry.teamSlug === null || slugs.has(entry.teamSlug), `unknown team ${entry.teamSlug}`);
