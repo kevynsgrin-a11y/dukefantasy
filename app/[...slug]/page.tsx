@@ -15,6 +15,7 @@ const staticRoots = new Set([
   "dfs",
   "x-and-ys",
   "injuries",
+  "fantasy-desk",
   "teams",
   "conferences",
   "stadiums",
@@ -123,6 +124,13 @@ export async function generateMetadata({
       title: "NFL Injury Report — Long-Term Ledger & Week-to-Week Watch",
       description:
         "Every NFL player on IR or out more than two weeks, plus a week-to-week watch with verified practice status and sourced likelihood to play. Updates Sunday mornings, midday, and before Monday night football.",
+    };
+  }
+  if (root === "fantasy-desk") {
+    return {
+      title: "Fantasy Desk — Waiver, Start/Sit, Rookie & Trade Boards",
+      description:
+        "Four sourced weekly decision rails: waiver wire watch after MNF, start/sit tiers by Thursday, rookie usage Tuesdays, and rest-of-season trade values. Tiers are decisions, never projections.",
     };
   }
   if (root === "x-and-ys") {

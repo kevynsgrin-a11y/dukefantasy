@@ -290,3 +290,46 @@ test("dataset records are provenance-tagged and never claim live status", () => 
     "operational",
   );
 });
+
+test("fantasy desk is fail-closed and decision-only", async () => {
+  const desk = await import("../lib/fantasy-desk.ts");
+  // Boards ship only when staged research passes ingest validation.
+  for (const board of [desk.fantasyDesk.waiver, desk.fantasyDesk.startSit, desk.fantasyDesk.rookie, desk.fantasyDesk.trade]) {
+    if (board === null) continue;
+    assert.ok(/^\d{4}-\d{2}-\d{2}$/.test(board.as_of), "board needs an as_of date");
+  }
+  // Start/Sit carries tier keys only — no numeric projection fields anywhere.
+  if (desk.fantasyDesk.startSit) {
+    const allowedTiers = new Set(["start_confidence", "start_if_needed", "fringe", "sit"]);
+    for (const group of desk.fantasyDesk.startSit.positions) {
+      for (const tier of group.tiers) {
+        assert.ok(allowedTiers.has(tier.tier), `unknown tier key ${tier.tier}`);
+        for (const row of tier.players) {
+          assert.ok(!("projected_points" in row) && !("projection" in row), "start/sit rows must not carry projections");
+          assert.ok(typeof row.note === "string" && row.note.length > 0, "every tier row carries a note");
+        }
+      }
+    }
+  }
+  // Trade tiers are internally consistent within a position.
+  if (desk.fantasyDesk.trade) {
+    for (const group of desk.fantasyDesk.trade.boards) {
+      const seen = new Map();
+      for (const row of group.rows) {
+        assert.ok(row.tier >= 1 && row.tier <= 5, `tier out of range for ${row.player}`);
+        const prior = seen.get(row.player);
+        assert.ok(prior === undefined || prior === row.tier, `${row.player} has inconsistent tiers`);
+        seen.set(row.player, row.tier);
+      }
+    }
+  }
+  // Waiver ownership is published-or-null, never estimated.
+  if (desk.fantasyDesk.waiver) {
+    for (const add of desk.fantasyDesk.waiver.adds) {
+      assert.ok(add.ownership_pct === null || (add.ownership_pct >= 0 && add.ownership_pct <= 100));
+      assert.ok(Array.isArray(add.sources) && add.sources.length > 0, `waiver add ${add.player} needs sources`);
+    }
+  }
+  // Cadence metadata is complete for the honest shells.
+  assert.equal(desk.DESK_CADENCE.length, 4);
+});

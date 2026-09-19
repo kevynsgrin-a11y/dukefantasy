@@ -30,7 +30,7 @@ function ConceptCard({ concept }: { concept: (typeof CONCEPT_LIBRARY)[number] })
           <span className="xy-concept-family">{concept.family}</span>
         </div>
       </header>
-      <div className="xy-concept-tags" aria-label="Concept tags">
+      <div className="xy-concept-tags">
         {concept.tags.map((tag) => (
           <span key={tag}>{tag}</span>
         ))}
@@ -84,7 +84,7 @@ function SchemeFamilyCard({
           <dd>{family.passIdentity}</dd>
         </div>
       </dl>
-      <div className="xy-family-teams" aria-label="Teams running this family in 2026">
+      <div className="xy-family-teams">
         {family.teamSlugs.map((slug) => {
           const team = teamBySlug.get(slug);
           return (
@@ -152,7 +152,7 @@ export function XAndYsPage({ teams }: { teams: readonly BroadcastTeam[] }) {
             <span className="eyebrow">PASS CONCEPTS · RUN CONCEPTS</span>
             <h2 id="concept-library-title">The library</h2>
           </div>
-          <div className="db-filters xy-concept-filters" role="group" aria-label="Filter concepts">
+          <div className="db-filters xy-concept-filters">
             <div className="apex-search-field xy-concept-search">
               <input
                 value={query}
