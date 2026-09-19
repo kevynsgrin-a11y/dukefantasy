@@ -24,13 +24,13 @@ compatibility_date = "2026-07-01"
 # then paste the returned ids below (and *_preview_id for `pages dev`).
 [[kv_namespaces]]
 binding = "DUKE_CACHE"
-id = "REPLACE_WITH_KV_ID"          # edge feed cache + daily Sleeper player-DB snapshot
-preview_id = "REPLACE_WITH_KV_ID"
+id = "894fee0cebbb47f7af37875693cc02bd"          # edge feed cache + daily Sleeper player-DB snapshot
+preview_id = "894fee0cebbb47f7af37875693cc02bd"
 
 [[kv_namespaces]]
 binding = "DUKE_SUBSCRIBERS"
-id = "REPLACE_WITH_KV_ID"          # email capture list
-preview_id = "REPLACE_WITH_KV_ID"
+id = "17d4ff8770584008befcbd0d4032b29e"          # email capture list
+preview_id = "17d4ff8770584008befcbd0d4032b29e"
 
 [vars]
 SITE_NAME = "DukeFantasy"
