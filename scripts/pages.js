@@ -111,6 +111,7 @@ export function layout(p) {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- ga4:start --><script async src="https://www.googletagmanager.com/gtag/js?id=G-VZESLELR90"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-VZESLELR90');</script><!-- ga4:end -->
 <title>${title}</title>
 <meta name="description" content="${escapeAttr(p.description)}">
 <link rel="canonical" href="${canonical}">
