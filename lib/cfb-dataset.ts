@@ -358,6 +358,7 @@ export function timeEtLabel(timeEt: string | null): string | null {
   return `${match[1]}:${match[2]} ${match[3]} ET`;
 }
 
+export const datasetAsOf: string = nfl.generatedAt.slice(0, 10);
 export const broadcastAsOf: string = nfl.generatedAt.slice(0, 10);
 export const broadcastNote: string =
   "TV designations from ESPN's live NFL schedule. Times Eastern; flex scheduling windows apply from Week 5 onward.";
