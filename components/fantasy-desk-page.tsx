@@ -18,6 +18,10 @@ import {
   type TradeBoard,
   type SitTier,
   type Market,
+  type WaiverBoard,
+  type WaiverAdd,
+  type WaiverDrop,
+  type RookieBoard,
 } from "@/lib/fantasy-desk";
 
 const MARKET_LABEL: Record<Market, string> = { buy_low: "Buy low", sell_high: "Sell high", fair: "Fair" };
@@ -178,12 +182,128 @@ export function FantasyDeskPage({ teams }: { teams: BroadcastTeam[] }) {
       {desk.trade ? <TradeSection board={desk.trade} /> : (
         <DataBoardEmpty title="Trade values not published yet" description={DESK_CADENCE.find((c) => c.key === "trade")?.slot ?? ""} />
       )}
-      {!desk.waiver ? (
-        <DataBoardEmpty title="Waiver Wire Watch opens Tuesday" description="The waiver edition covers the FOLLOWING week's adds — it compiles after Monday night football so every usage claim is grounded in completed games. First edition: Week 3." />
-      ) : null}
-      {!desk.rookie ? (
+      {desk.waiver ? <WaiverSection board={desk.waiver} /> : (
+        <DataBoardEmpty title="Waiver Wire Watch opens Tuesday" description="The waiver edition covers the FOLLOWING week's adds — it compiles after Monday night football so every usage claim is grounded in completed games." />
+      )}
+      {desk.rookie ? <RookieSection board={desk.rookie} /> : (
         <DataBoardEmpty title="Rookie Usage Report opens Tuesday" description="Snap shares and usage trends compile after the week completes — usage only, no projections." />
-      ) : null}
+      )}
     </div>
+  );
+}
+
+function WaiverSection({ board }: { board: WaiverBoard }) {
+  const byPosition = new Map<string, WaiverAdd[]>();
+  for (const a of board.adds) {
+    if (!byPosition.has(a.position)) byPosition.set(a.position, []);
+    byPosition.get(a.position)!.push(a);
+  }
+  return (
+    <section className="db-section" aria-label="Waiver wire watch">
+      <div className="db-section-heading">
+        <h2 className="font-display">Waiver Wire Watch — adding for Week {board.week_adding_for}</h2>
+        <p>
+          Adds compiled from completed Week 2 usage (including Monday night). Ownership percentages publish only when
+          a sourced number exists — this week none could be verified, so the board skews to emergent players and
+          confirmed injury replacements. As of {formatDataDate(board.as_of)}.
+        </p>
+      </div>
+      {[...byPosition.entries()].map(([position, adds]) => (
+        <div className="db-table-wrap" key={position}>
+          <h3 className="font-display">{position} adds</h3>
+          <table className="db-table">
+            <thead>
+              <tr>
+                <th>Player</th>
+                <th>Ownership</th>
+                <th>Why</th>
+                <th>Hold</th>
+                <th>Confidence</th>
+              </tr>
+            </thead>
+            <tbody>
+              {adds.map((a) => (
+                <tr key={a.player}>
+                  <td>
+                    <span className="db-primary-cell">
+                      <span className="db-player-link">{a.player}</span>
+                      <small className="db-team-link">{a.team_slug}</small>
+                    </span>
+                  </td>
+                  <td>{a.ownership_pct === null ? "n/p" : `${a.ownership_pct}%`}</td>
+                  <td>{a.why}</td>
+                  <td>{a.hold === "rest_of_season" ? "Rest of season" : "Stream"}</td>
+                  <td><ConfidencePill value={a.confidence} /></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ))}
+      {board.drops?.length ? (
+        <div className="db-section-heading">
+          <h3 className="font-display">Drop candidates</h3>
+          <div className="db-ledger-grid">
+            {board.drops.map((d) => (
+              <div key={d.player} className="db-mover-card">
+                <span className="db-primary-cell">
+                  <span className="db-player-link">{d.player}</span>
+                  <small className="db-team-link">{d.team_slug}</small>
+                </span>
+                <p className="db-expandable-note">{d.why}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : null}
+      {board.priority_note ? (
+        <p className="db-quiet-caption" style={{ marginTop: 12 }}>
+          <strong>Priority spend:</strong> {board.priority_note}
+        </p>
+      ) : null}
+    </section>
+  );
+}
+
+function RookieSection({ board }: { board: RookieBoard }) {
+  return (
+    <section className="db-section" aria-label="Rookie usage report">
+      <div className="db-section-heading">
+        <h2 className="font-display">Rookie Usage Report — Week {board.week}</h2>
+        <p>
+          2026-class skill players visible in the box-score leaders. Snap counts publish only when the
+          box-score record carries them — null means not published, never estimated. As of {formatDataDate(board.as_of)}.
+        </p>
+      </div>
+      <div className="db-table-wrap">
+        <table className="db-table">
+          <thead>
+            <tr>
+              <th>Player</th>
+              <th>Pos</th>
+              <th>Usage line</th>
+              <th>Trend</th>
+              <th>Fantasy meaning</th>
+            </tr>
+          </thead>
+          <tbody>
+            {board.rookies.map((r) => (
+              <tr key={r.player}>
+                <td>
+                  <span className="db-primary-cell">
+                    <span className="db-player-link">{r.player}</span>
+                    <small className="db-team-link">{r.team_slug}</small>
+                  </span>
+                </td>
+                <td>{r.position}</td>
+                <td>{r.why}</td>
+                <td>{r.trend === "rising" ? "▲ Rising" : r.trend === "fading" ? "▼ Fading" : "— Steady"}</td>
+                <td>{r.fantasy_meaning === "waiver_relevant" ? "Waiver relevant" : r.fantasy_meaning === "bench_stash" ? "Bench stash" : "Dynasty only"}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
   );
 }
