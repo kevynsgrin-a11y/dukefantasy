@@ -96,6 +96,11 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}
       >
+        {/* GA4 — canonical dukefantasy.com stream (property 550092856, fleet
+            GA4 inventory 2026-09-22). Source-owned since the 2026-09-22 audit;
+            previously the live tag only existed in a stale deployed build. */}
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-FQEFYM7FGR" />
+        <script>{`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-FQEFYM7FGR');`}</script>
         <script type="application/ld+json">
           {JSON.stringify(structuredData).replaceAll("<", "\\u003c")}
         </script>
