@@ -131,6 +131,7 @@ export function BroadcastHeader({
                 className="apex-switch"
                 checked={cleanMode}
                 onCheckedChange={onCleanModeChange}
+                aria-label="Clean Mode"
                 aria-describedby="clean-mode-description"
               >
                 <Switch.Thumb className="apex-switch-thumb" />
