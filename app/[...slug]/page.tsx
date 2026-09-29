@@ -103,6 +103,20 @@ export async function generateMetadata({
         "Find weekly NFL TV windows, broadcast assignments, and official team ticket destinations.",
     };
   }
+  if (root === "playoff-bracket") {
+    return {
+      title: "2026 NFL Playoff Bracket — Live AFC & NFC Seeds",
+      description:
+        "The 2026 NFL playoff bracket as it stands: AFC and NFC seeding, matchup stakes, and how every clinching scenario reshapes the road to Super Bowl LXI in February 2027.",
+    };
+  }
+  if (root === "playoff-predictor") {
+    return {
+      title: "NFL Playoff Predictor — Clinching Scenarios",
+      description:
+        "Which teams are on pace to make the 2026 NFL playoffs: seeding outlook, clinching scenarios, and division-race stakes across the AFC and NFC, updated through the season.",
+    };
+  }
   if (root === "transfer-portal") {
     const team = detail ? teams.find((candidate) => candidate.slug === detail) : null;
     return {

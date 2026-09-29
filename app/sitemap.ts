@@ -47,6 +47,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${origin}/x-and-ys`, lastModified: datasetDate, changeFrequency: "weekly", priority: 0.7 },
     { url: `${origin}/injuries`, lastModified: now, changeFrequency: "daily", priority: 0.8 },
     { url: `${origin}/fantasy-desk`, lastModified: datasetDate, changeFrequency: "weekly", priority: 0.8 },
+    // Playoff surfaces exist as HubApp sections but were never listed here,
+    // so Google had no discovery path once the season race started (2026-09-29
+    // GSC ops audit). Weekly cadence matches how seeding shifts.
+    { url: `${origin}/playoff-bracket`, lastModified: datasetDate, changeFrequency: "weekly", priority: 0.8 },
+    { url: `${origin}/playoff-predictor`, lastModified: datasetDate, changeFrequency: "weekly", priority: 0.8 },
   ];
   return [...teamRoutes, ...coachRoutes, ...conferenceRoutes, ...stadiumRoutes, ...featureRoutes];
 }
