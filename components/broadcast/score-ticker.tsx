@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowRight,
   ChevronLeft,
@@ -15,7 +15,16 @@ import {
   type BroadcastGame,
   type BroadcastTeam,
 } from "@/lib/homepage";
+import type { NflScoreboardPayload } from "@/lib/nfl-scoreboard";
 import { TeamMark } from "./primitives";
+
+/** Live patch for one dataset game, matched by ESPN event id. */
+interface LivePatch {
+  status: "live" | "final";
+  awayScore: number | null;
+  homeScore: number | null;
+  statusLabel: string | null;
+}
 
 export function ScoreTicker({
   games,
@@ -27,7 +36,61 @@ export function ScoreTicker({
   const rail = useRef<HTMLElement>(null);
   const [playing, setPlaying] = useState(false);
   const [hovered, setHovered] = useState(false);
+  const [live, setLive] = useState<Map<string, LivePatch> | null>(null);
   const bySlug = new Map(teams.map((team) => [team.slug, team]));
+
+  // Live overlay: the dataset bakes at deploy time; this patches in-progress
+  // scores and fresh finals from /api/nfl-scoreboard between deploys. Event
+  // ids are ESPN ids on both sides, so the match is exact. On any failure the
+  // baked dataset keeps rendering untouched.
+  useEffect(() => {
+    const controller = new AbortController();
+    const load = () =>
+      fetch("/api/nfl-scoreboard", { signal: controller.signal })
+        .then((response) => (response.ok ? response.json() : null))
+        .then((payload: NflScoreboardPayload | null) => {
+          if (!payload || payload.degraded) return;
+          const patches = new Map<string, LivePatch>();
+          for (const event of payload.events) {
+            if (event.state !== "live" && event.state !== "halftime" && event.state !== "final") continue;
+            patches.set(event.id, {
+              status: event.state === "final" ? "final" : "live",
+              awayScore: event.awayScore,
+              homeScore: event.homeScore,
+              statusLabel: event.statusLabel,
+            });
+          }
+          setLive(patches);
+        })
+        .catch(() => {});
+    load();
+    const interval = setInterval(load, 60_000);
+    const onVisible = () => {
+      if (document.visibilityState === "visible") load();
+    };
+    document.addEventListener("visibilitychange", onVisible);
+    return () => {
+      controller.abort();
+      clearInterval(interval);
+      document.removeEventListener("visibilitychange", onVisible);
+    };
+  }, []);
+
+  const patchedGames = useMemo(() => {
+    if (!live || live.size === 0) return games;
+    return games.map((game) => {
+      const patch = live.get(game.id);
+      if (!patch) return game;
+      return {
+        ...game,
+        status: patch.status,
+        statusDetail: patch.statusLabel ?? game.statusDetail,
+        awayScore: patch.awayScore ?? game.awayScore,
+        homeScore: patch.homeScore ?? game.homeScore,
+      };
+    });
+  }, [games, live]);
+
 
   useEffect(() => {
     if (
@@ -109,17 +172,23 @@ export function ScoreTicker({
           tabIndex={0}
           aria-label="Scrollable game results and upcoming games"
         >
-          {games.length === 0 && (
+          {patchedGames.length === 0 && (
             <div className="apex-ticker-empty">
               <p>Games are not published for this window.</p>
               <a href="/schedule">Open the full schedule</a>
             </div>
           )}
-          {games.map((game) => {
+          {patchedGames.map((game) => {
             const away = bySlug.get(game.awayTeamId);
             const home = bySlug.get(game.homeTeamId);
             if (!away || !home) return null;
             const hasScore = game.status === "final" || game.status === "live";
+            const statusText =
+              game.status === "live"
+                ? (game.statusDetail ?? "live")
+                : hasScore
+                  ? game.status
+                  : dateLabel(game.date);
             return (
               <a
                 className="apex-ticker-game"
@@ -129,7 +198,7 @@ export function ScoreTicker({
               >
                 <div className="apex-ticker-status">
                   <span data-live={game.status === "live"}>
-                    {hasScore ? game.status : dateLabel(game.date)}
+                    {statusText}
                   </span>
                   {game.broadcast && <b>{game.broadcast}</b>}
                 </div>

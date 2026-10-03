@@ -1,6 +1,7 @@
 "use client";
 
 import { featuredGame, weekGames, type HomepageData } from "@/lib/homepage";
+import { FinalsStrip } from "./finals-strip";
 import { MarqueeGame } from "./marquee-game";
 import { WeekScoreboard } from "./week-scoreboard";
 import {
@@ -65,6 +66,7 @@ export function BroadcastHomepage({
         teams={data.teams}
         referenceDate={data.referenceDate}
       />
+      <FinalsStrip referenceDate={data.referenceDate} />
       <div className="apex-intelligence-grid">
         <RankingsLane pollTables={data.pollTables} teams={data.teams} />
         <PortalLane

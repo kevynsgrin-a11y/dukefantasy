@@ -462,3 +462,19 @@ body { overscroll-behavior-y: none; }
     gap: 10px 18px;
   }
 }
+
+/* === Live finals strip (ON THE BOARD · the week so far) — ported from CFB Apex === */
+.apex-gdc-finals { display: grid; grid-template-columns: minmax(260px, 1.1fr) 1.6fr; gap: 14px; align-items: stretch; }
+.apex-gdc-upset { position: relative; display: flex; flex-direction: column; justify-content: center; gap: 8px; padding: 18px 20px; border: 1px solid color-mix(in srgb, var(--primary) 40%, transparent); border-radius: 6px; background: linear-gradient(135deg, color-mix(in srgb, var(--primary) 14%, transparent), transparent 65%); }
+.apex-gdc-upset-tag { font-family: var(--display-family); font-size: 10px; font-weight: 800; letter-spacing: 2.4px; color: var(--primary); }
+.apex-gdc-upset-matchup { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; font-size: 15px; font-weight: 600; }
+.apex-gdc-upset-score { font-family: var(--display-family); font-size: clamp(30px, 3.4vw, 42px); font-weight: 800; letter-spacing: -1px; font-variant-numeric: tabular-nums; }
+.apex-gdc-winner { color: var(--foreground); }
+.apex-gdc-final-rail { list-style: none; margin: 0; padding: 6px 0; display: flex; flex-direction: column; justify-content: center; }
+.apex-gdc-final-rail li { display: flex; align-items: center; gap: 10px; padding: 7px 4px; border-top: 1px solid color-mix(in srgb, var(--border) 50%, transparent); font-size: 13px; }
+.apex-gdc-final-rail li:first-child { border-top: 0; }
+.apex-gdc-final-rail li > span { color: var(--muted-foreground); font-variant-numeric: tabular-nums; }
+.apex-gdc-final-rail .apex-gdc-winner { color: var(--foreground); font-weight: 600; }
+@media (max-width: 1000px) {
+  .apex-gdc-finals { grid-template-columns: 1fr; }
+}
