@@ -39,13 +39,13 @@ export async function generateMetadata(): Promise<Metadata> {
       // until isProductionLaunchReady() is true.
       index: true,
       follow: true,
-        googleBot: {
-          index: true,
-          follow: true,
-        \x22max-image-preview\x22: \x22large\x22,
-        \x22max-snippet\x22: -1,
-        \x22max-video-preview\x22: -1,
-        },
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+        "max-video-preview": -1,
+      },
     },
     openGraph: {
       type: "website",
